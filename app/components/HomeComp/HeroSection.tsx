@@ -9,7 +9,7 @@ export default function HeroSection() {
   const [clock, setClock] = useState('')
   const [dayStr, setDayStr] = useState('')
   const [dateStr, setDateStr] = useState('')
-  const [blink, setBlink] = useState(true)
+
 
   useEffect(() => {
     const tick = () => {
@@ -20,11 +20,6 @@ export default function HeroSection() {
     }
     tick()
     const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  useEffect(() => {
-    const id = setInterval(() => setBlink(b => !b), 1200)
     return () => clearInterval(id)
   }, [])
 
@@ -47,7 +42,7 @@ export default function HeroSection() {
             background: 'radial-gradient(circle,#fde68a 0%,#f97316 45%,transparent 70%)',
           }}
         />
-        
+
         {/* Info card */}
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <div className="bg-black/55 backdrop-blur-md border border-white/15 rounded-2xl shadow-2xl px-8 sm:px-14 py-5 sm:py-7 mx-4 flex flex-col sm:flex-row items-center gap-5 sm:gap-12">

@@ -61,15 +61,18 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-2 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-gray-700/60 bg-gray-900 flex items-center justify-center flex-shrink-0">
-                <Image
-                  src="/nuiiLogo.png"
-                  alt="Nuii"
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 object-contain"
-                  style={{ filter: 'brightness(0) invert(1)' }}
-                />
+              <div className="relative flex-shrink-0">
+                <div className="absolute inset-0 rounded-xl blur-xl opacity-20 bg-amber-400 scale-110 pointer-events-none" />
+                <div className="relative w-10 h-10 rounded-xl border border-gray-700/60 bg-gray-900/80 flex items-center justify-center">
+                  <Image
+                    src="/nuiiLogo.png"
+                    alt="Nuii"
+                    width={36}
+                    height={36}
+                    className="w-7 h-7 object-contain"
+                    style={{ filter: 'invert(1) sepia(1) saturate(0) brightness(1.15)' }}
+                  />
+                </div>
               </div>
               <span className="text-xl font-extrabold text-white tracking-tight">Nuii</span>
             </div>

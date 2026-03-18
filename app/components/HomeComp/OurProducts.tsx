@@ -398,7 +398,7 @@ const products = [
 
 export default function OurProducts() {
   return (
-    <section className="bg-gray-950 py-20 px-4">
+    <section id="products" className="bg-gray-950 py-16 sm:py-20 px-4">
       <div className="max-w-6xl mx-auto">
 
         {/* Section heading */}

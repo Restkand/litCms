@@ -5,7 +5,8 @@ import Image from 'next/image'
 const values = [
   {
     title: 'Integritas',
-    desc: 'Setiap solusi yang kami bangun berlandaskan kejujuran dan tanggung jawab penuh kepada klien.',
+    desc: 'Kami menjunjung transparansi dalam setiap proses — dari estimasi biaya hingga penyelesaian proyek, tanpa agenda tersembunyi.',
+
     color: '#f59e0b',
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -15,7 +16,8 @@ const values = [
   },
   {
     title: 'Inovasi',
-    desc: 'Kami terus mengeksplorasi teknologi terkini untuk menghadirkan solusi yang relevan dan berdampak nyata.',
+    desc: 'Kami aktif mengadopsi teknologi terkini untuk menghadirkan solusi yang relevan, efisien, dan siap menghadapi tantangan bisnis masa depan.',
+
     color: '#3b82f6',
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -25,7 +27,8 @@ const values = [
   },
   {
     title: 'Kepercayaan',
-    desc: 'Kami membangun hubungan jangka panjang dengan klien berdasarkan transparansi dan hasil kerja yang dapat diandalkan.',
+    desc: 'Hubungan kami dengan klien dibangun di atas hasil kerja nyata — bukan sekadar janji. Kepuasan Anda adalah ukuran keberhasilan kami.',
+
     color: '#10b981',
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -36,7 +39,8 @@ const values = [
   },
   {
     title: 'Dampak Nyata',
-    desc: 'Setiap baris kode yang kami tulis bertujuan memberikan perubahan positif bagi bisnis dan komunitas yang kami layani.',
+    desc: 'Setiap solusi kami dirancang untuk memberikan nilai bisnis yang terukur — meningkatkan efisiensi, memperluas jangkauan, dan mendorong pertumbuhan.',
+
     color: '#8b5cf6',
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -48,7 +52,7 @@ const values = [
 
 export default function AboutUs() {
   return (
-    <section className="bg-gray-950 py-24 px-4 border-t border-gray-800/60">
+    <section id="about" className="bg-gray-950 py-16 sm:py-24 px-4 border-t border-gray-800/60">
       <div className="max-w-6xl mx-auto">
 
         {/* Section label */}
@@ -57,8 +61,11 @@ export default function AboutUs() {
             Tentang Kami
           </span>
           <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
-            About Us
+            Siapa Kami
           </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed mt-4">
+            Kami adalah tim profesional yang berdedikasi membangun solusi teknologi berkualitas — berakar pada kepercayaan, tumbuh bersama klien.
+          </p>
           <div className="mt-6 mx-auto w-16 h-1 rounded-full bg-amber-400 opacity-60" />
         </div>
 
@@ -88,16 +95,16 @@ export default function AboutUs() {
           <div className="w-full lg:w-3/5 space-y-6">
             <blockquote className="border-l-4 border-amber-400 pl-5">
               <p className="text-lg sm:text-xl font-semibold text-white leading-relaxed italic">
-                &ldquo;Seperti Amaterasu, membawa kehangatan, kejernihan, dan tujuan bagi dunia — kami menerangi jalan menuju kemajuan.&rdquo;
+                &ldquo;Seperti Amaterasu yang menerangi dunia — kami hadir untuk membawa kejelasan, arah, dan kemajuan nyata bagi setiap klien yang kami dampingi.&rdquo;
               </p>
             </blockquote>
 
             <p className="text-gray-400 text-base leading-relaxed">
-              Dipandu oleh integritas dan tanggung jawab, kami memberdayakan inovasi agar dapat tumbuh dan memberikan dampak yang berarti bagi setiap klien yang kami percaya.
+              <span className="text-white font-semibold">Nuii</span> adalah firma konsultansi IT yang berfokus pada pengembangan solusi digital berkualitas tinggi — mulai dari aplikasi mobile, platform web, sistem backend, hingga aplikasi desktop enterprise.
             </p>
 
             <p className="text-gray-400 text-base leading-relaxed">
-              <span className="text-white font-semibold">Nuii</span> adalah firma konsultansi IT terpercaya yang digerakkan oleh komitmen terhadap keunggulan dan nilai-nilai yang kuat. Kami percaya bahwa solusi teknologi terbaik bukan hanya yang mampu mentransformasi bisnis, tetapi juga yang menjunjung tinggi standar kepercayaan dan integritas tertinggi.
+              Kami tidak sekadar menulis kode. Kami memahami kebutuhan bisnis Anda secara mendalam, merancang solusi yang tepat sasaran, dan memastikan setiap produk yang kami bangun memberikan dampak yang terukur dan berkelanjutan.
             </p>
 
             {/* Divider */}

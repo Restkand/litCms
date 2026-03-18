@@ -1,3 +1,4 @@
+import HeroSection from "@/app/components/HomeComp/HeroSection"
 import OurExperience from "@/app/components/HomeComp/OurExperience"
 import OurProducts from "@/app/components/HomeComp/OurProducts"
 import AboutUs from "@/app/components/HomeComp/AboutUs"
@@ -41,6 +42,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="min-h-screen bg-gray-950 text-white">
+        <HeroSection />
         <OurExperience />
         <OurProducts />
         <AboutUs />

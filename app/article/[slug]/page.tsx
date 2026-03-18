@@ -64,7 +64,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     {/* Article Body */}
                     <div className="px-6 sm:px-8 py-8 sm:py-12">
                         <div className="prose prose-lg max-w-none">
-                            {article.content.split('\n').map((paragraph, idx) => (
+                            {article.content.split('\n').map((paragraph: string, idx: number) => (
                                 paragraph.trim() && (
                                     <p key={idx} className="mb-4 text-gray-300 text-base sm:text-lg leading-relaxed">
                                         {paragraph}

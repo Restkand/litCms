@@ -74,7 +74,7 @@ const domains = [
 
 export default function OurExperience() {
   return (
-    <section className="bg-gray-950 py-20 px-4 border-t border-gray-800/60">
+    <section id="experience" className="bg-gray-950 py-16 sm:py-20 px-4 border-t border-gray-800/60">
       <div className="max-w-6xl mx-auto">
 
         {/* Section heading */}

@@ -12,7 +12,6 @@ const topicSubjectMap: Record<string, string> = {
   lainnya: 'Pesan Masuk',
 }
 
-/** Simple in-memory rate limit: max 3 requests per IP per 10 minutes */
 const rateMap = new Map<string, { count: number; reset: number }>()
 
 function isRateLimited(ip: string): boolean {
@@ -53,7 +52,6 @@ export async function POST(req: NextRequest) {
 
   const { name, email, company, topic, message } = body
 
-  // Input validation
   if (!name || !email || !topic || !message) {
     return NextResponse.json({ error: 'Semua kolom wajib diisi.' }, { status: 400 })
   }

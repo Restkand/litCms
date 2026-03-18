@@ -128,7 +128,7 @@ export default function ContactUs() {
   }
 
   return (
-    <section className="bg-gray-950 py-24 px-4 border-t border-gray-800/60">
+    <section id="contact" className="bg-gray-950 py-16 sm:py-24 px-4 border-t border-gray-800/60">
       <div className="max-w-6xl mx-auto">
 
         {/* Heading */}

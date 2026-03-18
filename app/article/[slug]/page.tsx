@@ -30,7 +30,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             <span className="font-medium">Kembali</span>
                         </Link>
                         <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                            CMS Lite
+                            CMS Demo
                         </h1>
                     </div>
                 </div>

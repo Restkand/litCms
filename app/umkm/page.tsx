@@ -1,10 +1,8 @@
 import Link from "next/link"
-import Image from "next/image"
 
 export default function ProfilPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-            {/* Header */}
             <header className="bg-gray-800 bg-opacity-95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-700">
                 <div className="max-w-6xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
@@ -30,10 +28,8 @@ export default function ProfilPage() {
                 </div>
             </header>
 
-            {/* Hero Section dengan Banner */}
             <section className="relative h-64 sm:h-80 md:h-96 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600">
-                    {/* Placeholder untuk Banner Image */}
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
                         <div className="text-center text-white">
                             <div className="text-6xl mb-4">📸</div>
@@ -55,7 +51,6 @@ export default function ProfilPage() {
             </section>
 
             <main className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-                {/* Tentang Kami */}
                 <section className="mb-12 sm:mb-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-700">
@@ -73,7 +68,6 @@ export default function ProfilPage() {
                             </p>
                         </div>
 
-                        {/* Logo/Profile Image */}
                         <div className="bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-700">
                             <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl flex items-center justify-center border-2 border-gray-600">
                                 <div className="text-center text-gray-400">
@@ -86,13 +80,11 @@ export default function ProfilPage() {
                     </div>
                 </section>
 
-                {/* Produk/Layanan */}
                 <section className="mb-12 sm:mb-16">
                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8 text-center">
                         Produk Unggulan
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* Produk 1 */}
                         <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-blue-500 transition-all group">
                             <div className="aspect-square bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
                                 <div className="text-center text-white">
@@ -115,7 +107,6 @@ export default function ProfilPage() {
                             </div>
                         </div>
 
-                        {/* Produk 2 */}
                         <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700 hover:border-blue-500 transition-all group">
                             <div className="aspect-square bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                                 <div className="text-center text-white">

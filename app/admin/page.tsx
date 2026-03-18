@@ -143,7 +143,7 @@ export default function AdminPage() {
               Admin Panel
             </h1>
             <div className="hidden sm:block px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600">
-              CMS Lite
+              CMS Demo
             </div>
           </div>
 

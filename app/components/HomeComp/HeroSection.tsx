@@ -3,13 +3,20 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 
+// Staggered fade-up helpers
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 32, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0,  filter: 'blur(0px)', transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] as const, delay } },
+})
+
 export default function HeroSection() {
-  const [clock, setClock] = useState('')
-  const [dayStr, setDayStr] = useState('')
+  const [clock, setClock]     = useState('')
+  const [dayStr, setDayStr]   = useState('')
   const [dateStr, setDateStr] = useState('')
 
   useEffect(() => {
@@ -46,7 +53,6 @@ export default function HeroSection() {
         className="absolute bottom-0 left-0 w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full opacity-10 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)', transform: 'translate(-30%, 30%)' }}
       />
-
       {/* Grid pattern overlay */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -60,9 +66,11 @@ export default function HeroSection() {
       <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-4 pt-20 pb-16 text-center max-w-5xl mx-auto w-full">
 
         {/* Logo + badge */}
-        <div className="flex flex-col items-center gap-4 mb-8">
+        <motion.div
+          className="flex flex-col items-center gap-4 mb-8"
+          {...fadeUp(0)}
+        >
           <div className="relative">
-            {/* Glow behind logo */}
             <div className="absolute inset-0 rounded-3xl blur-3xl opacity-20 bg-amber-400 scale-110 pointer-events-none" />
             <div className="relative rounded-2xl overflow-hidden border border-amber-400/30 bg-gray-900/80 p-2 shadow-2xl">
               <Image
@@ -80,10 +88,13 @@ export default function HeroSection() {
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             IT Consulting &amp; Digital Solutions
           </span>
-        </div>
+        </motion.div>
 
         {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight mb-4">
+        <motion.h1
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight mb-4"
+          {...fadeUp(0.12)}
+        >
           Solusi Digital
           <br />
           <span
@@ -97,16 +108,22 @@ export default function HeroSection() {
           >
             Transparan &amp; Terjangkau
           </span>
-        </h1>
+        </motion.h1>
 
         {/* Subheadline */}
-        <p className="text-gray-400 text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed mb-10">
+        <motion.p
+          className="text-gray-400 text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed mb-10"
+          {...fadeUp(0.22)}
+        >
           Kami membangun aplikasi mobile, web, backend, dan desktop berkualitas tinggi —
           dengan harga yang jelas, kompetitif, dan selalu disesuaikan dengan skala kebutuhan Anda.
-        </p>
+        </motion.p>
 
         {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 mb-16">
+        <motion.div
+          className="flex flex-col sm:flex-row items-center gap-4 mb-16"
+          {...fadeUp(0.3)}
+        >
           <Link
             href="#products"
             className="w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-gray-950 text-sm sm:text-base bg-amber-400 hover:bg-amber-300 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-amber-400/25"
@@ -119,10 +136,13 @@ export default function HeroSection() {
           >
             Hubungi Kami
           </Link>
-        </div>
+        </motion.div>
 
         {/* Clock widget */}
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto">
+        <motion.div
+          className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto"
+          {...fadeUp(0.4)}
+        >
           <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl px-6 sm:px-10 py-5 sm:py-6 flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-10">
             <div className="text-center">
               <div className="text-4xl sm:text-5xl font-mono font-extrabold text-white tracking-[0.15em]">
@@ -142,18 +162,21 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="relative z-10 flex justify-center pb-8">
+      <motion.div
+        className="relative z-10 flex justify-center pb-8"
+        {...fadeUp(0.52)}
+      >
         <div className="flex flex-col items-center gap-1 text-gray-600 animate-bounce">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
-      </div>
+      </motion.div>
 
     </section>
   )

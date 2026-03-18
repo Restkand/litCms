@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
 const RECIPIENT = 'nuiiapps3@gmail.com'
-const CC = 'reiskand07@gmail.com'
+const CC = 'reiskand07@gmail.com, anggasss.397@gmail.com'
 
 const topicSubjectMap: Record<string, string> = {
   konsultasi: 'Konsultasi IT',

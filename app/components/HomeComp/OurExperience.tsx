@@ -1,10 +1,37 @@
 'use client'
 
+import { motion, type Variants } from 'framer-motion'
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+}
+
 const stats = [
-  { value: '3+', label: 'Tahun Pengalaman', sub: 'Membangun solusi digital sejak 2022' },
-  { value: '10+', label: 'Proyek Diselesaikan', sub: 'Mobile · Web · Desktop' },
-  { value: '5', label: 'Platform Dikuasai', sub: 'iOS · Android · Web · Desktop · Backend' },
-  { value: '100%', label: 'Komitmen', sub: 'Dari ide hingga produk nyata' },
+  {
+    label: 'Tahun Pengalaman',
+    value: '3+',
+    delta: 'Sejak 2022',
+    description: 'Membangun solusi digital sejak 2022',
+  },
+  {
+    label: 'Proyek Diselesaikan',
+    value: '10+',
+    delta: 'Mobile · Web · Desktop',
+    description: 'Dari ide hingga produk yang berjalan nyata',
+  },
+  {
+    label: 'Platform Dikuasai',
+    value: '5',
+    delta: 'Multi-platform',
+    description: 'iOS · Android · Web · Desktop · Backend',
+  },
+  {
+    label: 'Komitmen Tim',
+    value: '100%',
+    delta: 'Full-cycle',
+    description: 'Dari konsep hingga produk di tangan pengguna',
+  },
 ]
 
 const domains = [
@@ -74,59 +101,139 @@ const domains = [
 
 export default function OurExperience() {
   return (
-    <section id="experience" className="bg-gray-950 py-16 sm:py-20 px-4 border-t border-gray-800/60">
-      <div className="max-w-6xl mx-auto">
+    <section
+      id="experience"
+      className="relative overflow-hidden bg-gray-950 py-24 lg:py-32 px-6 border-t border-gray-800/60"
+    >
+      {/* Ambient background glows */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-0 top-0 h-[380px] w-[380px] rounded-full bg-amber-400/5 blur-[120px]" />
+        <div className="absolute right-0 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-amber-500/[0.04] blur-[140px]" />
+      </div>
 
-        {/* Section heading */}
-        <div className="text-center mb-16">
-          <span className="text-xs font-bold tracking-[0.25em] uppercase text-amber-400 mb-3 block">
-            Tentang Kami
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
+      <div className="mx-auto max-w-6xl space-y-14">
+
+        {/* ── Heading ── */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mx-auto max-w-3xl text-center"
+        >
+          {/* Badge */}
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-400 backdrop-blur">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
             Pengalaman Kami
+          </div>
+
+          <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
+            Rekam jejak yang membuktikan{' '}
+            <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
+              kualitas solusi digital
+            </span>{' '}
+            kami
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-            Tim kami telah membangun berbagai solusi digital untuk komunitas, masjid, dan perusahaan di Indonesia —
-            dari ide awal hingga produk yang berjalan nyata di tangan pengguna.
+          <p className="mt-5 text-base leading-relaxed text-gray-400 md:text-lg">
+            Tim kami telah membangun berbagai solusi digital untuk komunitas, masjid, dan perusahaan di
+            Indonesia — dari ide awal hingga produk yang berjalan nyata di tangan pengguna.
           </p>
-          <div className="mt-6 mx-auto w-16 h-1 rounded-full bg-amber-400 opacity-60" />
-        </div>
+        </motion.div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+        {/* ── Stats grid (glassmorphism cards) ── */}
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ staggerChildren: 0.08 }}
+          className="grid gap-4 md:grid-cols-2"
+        >
           {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-gray-900 border border-gray-800 rounded-2xl p-6 text-center hover:border-amber-400/30 transition-colors duration-200"
-            >
-              <div className="text-4xl sm:text-5xl font-extrabold text-amber-400 mb-2 leading-none">
-                {stat.value}
+            <motion.div key={stat.label} variants={fadeUp}>
+              <div className="group relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8 backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1">
+                {/* Inner gradient overlay */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent" />
+
+                <div className="relative z-10 space-y-5">
+                  {/* Top row: label + arrow icon */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-gray-400">
+                      {stat.label}
+                    </span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 text-gray-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 17L17 7M7 7h10v10" />
+                    </svg>
+                  </div>
+
+                  {/* Value + delta badge */}
+                  <div className="flex items-end gap-3">
+                    <span className="text-5xl font-extrabold leading-none tracking-tight text-amber-400">
+                      {stat.value}
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-gray-400 backdrop-blur">
+                      {stat.delta}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm leading-relaxed text-gray-500">{stat.description}</p>
+                </div>
               </div>
-              <div className="text-white font-semibold text-sm mb-1">{stat.label}</div>
-              <div className="text-gray-500 text-xs leading-relaxed">{stat.sub}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Domain cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {domains.slice(0, 3).map((domain) => (
-            <DomainCard key={domain.title} domain={domain} />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 lg:w-2/3 lg:mx-auto">
-          {domains.slice(3).map((domain) => (
-            <DomainCard key={domain.title} domain={domain} />
-          ))}
-        </div>
+        {/* ── Domain expertise ── */}
+        <div>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="mb-8 text-center"
+          >
+            <h3 className="text-2xl font-extrabold text-white">Domain Keahlian</h3>
+            <p className="mt-2 text-sm text-gray-500">Teknologi yang kami kuasai di setiap lini</p>
+          </motion.div>
 
-        {/* Tagline */}
-        <div className="mt-16 text-center px-4">
-          <p className="text-gray-500 text-sm italic max-w-xl mx-auto leading-relaxed">
-            &ldquo;Kami tidak hanya menulis kode — kami membangun solusi yang memberikan dampak nyata bagi pengguna.&rdquo;
-          </p>
-        </div>
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ staggerChildren: 0.07 }}
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {domains.slice(0, 3).map((domain) => (
+              <motion.div key={domain.title} variants={fadeUp}>
+                <DomainCard domain={domain} />
+              </motion.div>
+            ))}
+          </motion.div>
 
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ staggerChildren: 0.07, delayChildren: 0.1 }}
+            className="mt-4 grid gap-4 sm:grid-cols-2 lg:mx-auto lg:w-2/3"
+          >
+            {domains.slice(3).map((domain) => (
+              <motion.div key={domain.title} variants={fadeUp}>
+                <DomainCard domain={domain} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   )
@@ -135,34 +242,46 @@ export default function OurExperience() {
 function DomainCard({ domain }: { domain: typeof domains[number] }) {
   return (
     <div
-      className="bg-gray-900 rounded-2xl p-6 border transition-all duration-200 hover:scale-[1.02] group"
-      style={{ borderColor: domain.color + '30' }}
+      className="group relative overflow-hidden rounded-2xl border p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1"
+      style={{
+        borderColor: domain.color + '28',
+        background: 'rgba(255,255,255,0.02)',
+      }}
     >
-      {/* Icon */}
+      {/* Colored top-left gradient */}
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-        style={{ background: domain.color + '18', color: domain.color }}
-      >
-        {domain.icon}
-      </div>
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${domain.color}0a 0%, transparent 55%)`,
+        }}
+      />
 
-      {/* Color accent bar */}
-      <div className="w-8 h-0.5 rounded-full mb-4" style={{ background: domain.color }} />
+      <div className="relative z-10">
+        {/* Icon */}
+        <div
+          className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
+          style={{ background: domain.color + '18', color: domain.color }}
+        >
+          {domain.icon}
+        </div>
 
-      <h3 className="text-base font-bold text-white mb-2">{domain.title}</h3>
-      <p className="text-gray-400 text-sm leading-relaxed mb-4">{domain.desc}</p>
+        {/* Accent line */}
+        <div className="mb-4 h-0.5 w-8 rounded-full" style={{ background: domain.color }} />
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-2">
-        {domain.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-xs font-medium px-2.5 py-1 rounded-full"
-            style={{ color: domain.color, background: domain.color + '15' }}
-          >
-            {tag}
-          </span>
-        ))}
+        <h3 className="mb-2 text-base font-bold text-white">{domain.title}</h3>
+        <p className="mb-4 text-sm leading-relaxed text-gray-400">{domain.desc}</p>
+
+        <div className="flex flex-wrap gap-2">
+          {domain.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full px-2.5 py-1 text-xs font-medium"
+              style={{ color: domain.color, background: domain.color + '15' }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   )

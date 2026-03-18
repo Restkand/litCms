@@ -1,6 +1,23 @@
 'use client'
 
 import Image from 'next/image'
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
+
+const fadeUp = (delay = 0) => ({
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const, delay } },
+})
+
+const fadeLeft = (delay = 0) => ({
+  hidden: { opacity: 0, x: -36 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const, delay } },
+})
+
+const fadeRight = (delay = 0) => ({
+  hidden: { opacity: 0, x: 36 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const, delay } },
+})
 
 const values = [
   {
@@ -51,34 +68,30 @@ const values = [
 ]
 
 export default function AboutUs() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 })
+
   return (
-    <section id="about" className="bg-gray-950 py-16 sm:py-24 px-4 border-t border-gray-800/60">
+    <section id="about" className="bg-gray-950 py-16 sm:py-24 px-4 border-t border-gray-800/60" ref={sectionRef}>
       <div className="max-w-6xl mx-auto">
 
-        {/* Section label */}
-        <div className="text-center mb-16">
-          <span className="text-xs font-bold tracking-[0.25em] uppercase text-amber-400 mb-3 block">
-            Tentang Kami
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
-            Siapa Kami
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed mt-4">
-            Kami adalah tim profesional yang berdedikasi membangun solusi teknologi berkualitas — berakar pada kepercayaan, tumbuh bersama klien.
-          </p>
-          <div className="mt-6 mx-auto w-16 h-1 rounded-full bg-amber-400 opacity-60" />
-        </div>
+        {/* Two-column: Logo left | All text right */}
+        <div className="flex flex-col lg:flex-row items-start gap-14 lg:gap-20">
 
-        {/* Main content: logo left, text right */}
-        <div className="flex flex-col lg:flex-row items-center gap-14 lg:gap-20 mb-20">
-
-          {/* Logo (dark-mode adapted with glow) */}
-          <div className="w-full lg:w-2/5 flex justify-center">
+          {/* ── LEFT: Logo ── */}
+          <motion.div
+            className="w-full lg:w-2/5 flex justify-center lg:justify-start lg:sticky lg:top-24"
+            variants={fadeLeft(0)}
+            initial="hidden"
+            animate={isInView ? 'show' : 'hidden'}
+          >
             <div className="relative">
-              {/* Amber glow behind the logo */}
               <div className="absolute inset-0 rounded-3xl blur-3xl opacity-20 bg-amber-400 scale-110 pointer-events-none" />
-              <div className="relative rounded-2xl overflow-hidden border border-gray-700/60 bg-gray-900/80 p-2 shadow-2xl">
-                {/* Invert filter makes the black-on-cream logo become white-on-dark */}
+              <motion.div
+                className="relative rounded-2xl overflow-hidden border border-gray-700/60 bg-gray-900/80 p-2 shadow-2xl"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.3 }}
+              >
                 <Image
                   src="/nuiiLogo.png"
                   alt="Nuii Logo"
@@ -88,16 +101,39 @@ export default function AboutUs() {
                   style={{ filter: 'invert(1) sepia(1) saturate(0) brightness(1.15)' }}
                   priority
                 />
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="w-full lg:w-3/5 space-y-6">
-            <blockquote className="border-l-4 border-amber-400 pl-5">
-              <p className="text-lg sm:text-xl font-semibold text-white leading-relaxed italic">
-                &ldquo;Seperti Amaterasu yang menerangi dunia — kami hadir untuk membawa kejelasan, arah, dan kemajuan nyata bagi setiap klien yang kami dampingi.&rdquo;
-              </p>
-            </blockquote>
+          {/* ── RIGHT: Title + description + Nilai Kami ── */}
+          <motion.div
+            className="w-full lg:w-3/5 space-y-6"
+            variants={fadeRight(0.15)}
+            initial="hidden"
+            animate={isInView ? 'show' : 'hidden'}
+          >
+            {/* Label + heading */}
+            <div>
+              <span className="text-xs font-bold tracking-[0.25em] uppercase text-amber-400 mb-3 block">
+                Tentang Kami
+              </span>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">
+                Siapa Kami
+              </h2>
+              <motion.div
+                className="h-1 rounded-full bg-amber-400 opacity-60"
+                initial={{ width: 0 }}
+                animate={isInView ? { width: 64 } : { width: 0 }}
+                transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </div>
+
+            {/* Sub-heading */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+                Mitra Teknologi Terpercaya untuk Bisnis &amp; Komunitas Indonesia
+              </h3>
+            </div>
 
             <p className="text-gray-400 text-base leading-relaxed">
               <span className="text-white font-semibold">Nuii</span> adalah firma konsultansi IT yang berfokus pada pengembangan solusi digital berkualitas tinggi — mulai dari aplikasi mobile, platform web, sistem backend, hingga aplikasi desktop enterprise.
@@ -105,6 +141,10 @@ export default function AboutUs() {
 
             <p className="text-gray-400 text-base leading-relaxed">
               Kami tidak sekadar menulis kode. Kami memahami kebutuhan bisnis Anda secara mendalam, merancang solusi yang tepat sasaran, dan memastikan setiap produk yang kami bangun memberikan dampak yang terukur dan berkelanjutan.
+            </p>
+
+            <p className="text-gray-400 text-base leading-relaxed">
+              Didirikan oleh praktisi IT berpengalaman, Nuii telah menyelesaikan lebih dari <span className="text-white font-semibold">10+ proyek</span> di berbagai sektor — mulai dari sistem keuangan digital, platform manajemen konten, hingga aplikasi monitoring aset enterprise.
             </p>
 
             {/* Divider */}
@@ -116,22 +156,31 @@ export default function AboutUs() {
 
             {/* Values grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              {values.map((v) => (
-                <div key={v.title} className="flex items-start gap-3 bg-gray-900 rounded-xl p-4 border border-gray-800 hover:border-gray-700 transition-colors">
-                  <div
+              {values.map((v, i) => (
+                <motion.div
+                  key={v.title}
+                  className="flex items-start gap-3 bg-gray-900 rounded-xl p-4 border border-gray-800 hover:border-gray-700 transition-colors group"
+                  variants={fadeUp(0.25 + i * 0.08)}
+                  initial="hidden"
+                  animate={isInView ? 'show' : 'hidden'}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                >
+                  <motion.div
                     className="mt-0.5 w-9 h-9 flex-shrink-0 rounded-lg flex items-center justify-center"
                     style={{ background: v.color + '1a', color: v.color }}
+                    whileHover={{ rotate: [0, -8, 8, -4, 0], transition: { duration: 0.45 } }}
                   >
                     {v.icon}
-                  </div>
+                  </motion.div>
                   <div>
-                    <p className="text-white font-semibold text-sm mb-1">{v.title}</p>
+                    <p className="text-white font-semibold text-sm mb-1 group-hover:text-amber-400 transition-colors duration-200">{v.title}</p>
                     <p className="text-gray-500 text-xs leading-relaxed">{v.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
+
         </div>
 
       </div>

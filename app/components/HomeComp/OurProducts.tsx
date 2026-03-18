@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import Link from 'next/link'
+import { Timeline } from '@/app/components/ui/timeline'
 
 function MobileMockup({ color }: { color: string }) {
   return (
@@ -344,6 +345,12 @@ const products = [
     title: 'FIFA Pay',
     description:
       'Aplikasi mobile pembayaran tagihan (PPOB) yang memudahkan pengguna membayar listrik, air, internet, dan pulsa dalam satu genggaman. Dibangun dengan Expo Go untuk pengalaman native yang mulus di iOS dan Android.',
+    features: [
+      'Bayar tagihan listrik, air & internet dalam 1 tap',
+      'Riwayat transaksi lengkap & real-time',
+      'Top-up saldo e-wallet & transfer cepat',
+      'Antarmuka native yang mulus di iOS & Android',
+    ],
     tech: ['Expo Go', 'React Native', 'PPOB Integration'],
     cta: null as string | null,
     ctaLabel: null as string | null,
@@ -355,6 +362,12 @@ const products = [
     title: 'Alfurqon CMS',
     description:
       'Sistem manajemen konten berbasis web untuk Masjid Alfurqon Bekasi. Mengelola artikel, pengumuman, jadwal kajian, dan informasi masjid secara real-time. Kini online dan dapat diakses oleh publik.',
+    features: [
+      'Kelola artikel, pengumuman & jadwal kajian',
+      'Dashboard admin yang intuitif & mudah digunakan',
+      'SEO-friendly dengan performa fast load',
+      'Notifikasi & informasi masjid real-time',
+    ],
     tech: ['Next.js', 'Nest.js', 'PostgreSQL'],
     cta: 'https://alfurqonbekasi.id/',
     ctaLabel: 'Kunjungi Website',
@@ -366,6 +379,12 @@ const products = [
     title: 'Kharites',
     description:
       'Aplikasi mobile untuk manajemen keanggotaan digital. Memudahkan organisasi dan komunitas dalam mengelola data anggota, kartu member digital, dan berbagai benefit keanggotaan dalam satu platform yang terintegrasi.',
+    features: [
+      'Kartu member digital berbasis QR Code',
+      'Data anggota terpusat & mudah dikelola',
+      'Notifikasi benefit & informasi keanggotaan',
+      'Multi-organisasi dalam satu platform',
+    ],
     tech: ['Expo Go', 'React Native', 'Membership System'],
     cta: null as string | null,
     ctaLabel: null as string | null,
@@ -377,6 +396,12 @@ const products = [
     title: 'CMS Dashboard',
     description:
       'Dashboard Content Management System yang powerful dan intuitif untuk mengelola artikel, pengguna, dan konten digital. Antarmuka yang bersih, responsif, dan siap pakai. Tersedia demo langsung yang dapat Anda coba sekarang.',
+    features: [
+      'Manajemen artikel multi-author dengan mudah',
+      'Autentikasi aman menggunakan NextAuth',
+      'API RESTful yang siap untuk integrasi',
+      'Preview konten live sebelum dipublikasi',
+    ],
     tech: ['Next.js', 'NextAuth', 'Prisma', 'SQLite'],
     cta: '/admin',
     ctaLabel: 'Coba Demo',
@@ -387,7 +412,13 @@ const products = [
     tag: 'Desktop App · Asset Management',
     title: 'Asset Control',
     description:
-      'Aplikasi desktop untuk pengecekan dan pemantauan aset perangkat perusahaan. Memantau status penggunaan  CPU & RAM, serta melakukan health check-up untuk laptop dan komputer di seluruh perusahaan.',
+      'Aplikasi desktop untuk pengecekan dan pemantauan aset perangkat perusahaan. Memantau status penggunaan CPU & RAM, serta melakukan health check-up untuk laptop dan komputer di seluruh perusahaan.',
+    features: [
+      'Monitor CPU & RAM seluruh perangkat real-time',
+      'Health check-up otomatis berkala',
+      'Inventaris aset perusahaan terpusat',
+      'Alert dini sebelum perangkat bermasalah',
+    ],
     tech: ['.NET', 'WPF', 'Windows', 'Hardware Monitoring'],
     cta: null as string | null,
     ctaLabel: null as string | null,
@@ -397,12 +428,89 @@ const products = [
 ]
 
 export default function OurProducts() {
+  const timelineData = products.map((product) => ({
+    title: product.title,
+    subtitle: product.tag,
+    description: product.description,
+    cta: product.cta && product.ctaLabel ? (
+      <Link
+        href={product.cta}
+        target={product.cta.startsWith('http') ? '_blank' : undefined}
+        rel={product.cta.startsWith('http') ? 'noopener noreferrer' : undefined}
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm text-white shadow-lg transition-all duration-200 hover:scale-105 hover:brightness-110"
+        style={{ background: product.color }}
+      >
+        {product.ctaLabel}
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </Link>
+    ) : undefined,
+    content: (
+      <div className="flex flex-col items-center gap-6 pb-10">
+        {/* Large Mockup */}
+        <div className="relative w-full flex justify-center">
+          <div
+            className="relative w-full"
+            style={{
+              maxWidth:
+                product.mockup === 'mobile'
+                  ? '220px'
+                  : product.mockup === 'desktop'
+                  ? '580px'
+                  : '500px',
+              margin: '0 auto',
+            }}
+          >
+            <div
+              className="absolute inset-0 rounded-3xl blur-3xl opacity-25 pointer-events-none"
+              style={{ background: product.color }}
+            />
+            <div className="relative drop-shadow-2xl">
+              {product.mockup === 'mobile' && <MobileMockup color={product.color} />}
+              {product.mockup === 'browser' && <BrowserMockup color={product.color} />}
+              {product.mockup === 'dashboard' && <DashboardMockup color={product.color} />}
+              {product.mockup === 'desktop' && <DesktopAppMockup color={product.color} />}
+            </div>
+          </div>
+        </div>
+
+        {/* Feature highlights */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {product.features.map((f) => (
+            <div
+              key={f}
+              className="flex items-start gap-3 p-3.5 rounded-xl bg-gray-900 border border-gray-800"
+            >
+              <span
+                className="mt-1 h-2 w-2 rounded-full flex-shrink-0"
+                style={{ background: product.color }}
+              />
+              <span className="text-gray-300 text-sm leading-snug">{f}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Tech badges */}
+        <div className="w-full flex flex-wrap gap-2">
+          {product.tech.map((t) => (
+            <span
+              key={t}
+              className="px-3 py-1 text-xs font-medium rounded-full bg-gray-800 text-gray-300 border border-gray-700"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    ),
+  }))
+
   return (
     <section id="products" className="bg-gray-950 py-16 sm:py-20 px-4">
       <div className="max-w-6xl mx-auto">
-
         {/* Section heading */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-10">
           <span className="text-xs font-bold tracking-[0.25em] uppercase text-amber-400 mb-3 block">
             Portfolio
           </span>
@@ -415,83 +523,8 @@ export default function OurProducts() {
           <div className="mt-6 mx-auto w-16 h-1 rounded-full bg-amber-400 opacity-60" />
         </div>
 
-        {/* Product rows */}
-        <div className="space-y-28">
-          {products.map((product, i) => {
-            const isEven = i % 2 === 0
-            return (
-              <div
-                key={product.title}
-                className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-10 lg:gap-16`}
-              >
-                {/* Mockup */}
-                <div className="w-full lg:w-1/2 flex justify-center">
-                  <div
-                    className="relative w-full"
-                    style={{ maxWidth: product.mockup === 'mobile' ? '200px' : product.mockup === 'desktop' ? '480px' : '420px' }}
-                  >
-                    <div
-                      className="absolute inset-0 rounded-3xl blur-2xl opacity-25 pointer-events-none"
-                      style={{ background: product.color }}
-                    />
-                    <div className="relative drop-shadow-2xl">
-                      {product.mockup === 'mobile' && <MobileMockup color={product.color} />}
-                      {product.mockup === 'browser' && <BrowserMockup color={product.color} />}
-                      {product.mockup === 'dashboard' && <DashboardMockup color={product.color} />}
-                      {product.mockup === 'desktop' && <DesktopAppMockup color={product.color} />}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Text */}
-                <div className={`w-full lg:w-1/2 ${isEven ? '' : 'lg:text-right'}`}>
-                  <span
-                    className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1.5 rounded-full"
-                    style={{ color: product.color, background: product.color + '1a' }}
-                  >
-                    {product.tag}
-                  </span>
-
-                  <h3 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-                    {product.title}
-                  </h3>
-
-                  <p className="text-gray-400 text-base leading-relaxed mb-6">
-                    {product.description}
-                  </p>
-
-                  {/* Tech stack badges */}
-                  <div className={`flex flex-wrap gap-2 mb-8 ${isEven ? '' : 'lg:justify-end'}`}>
-                    {product.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1 text-xs font-medium rounded-full bg-gray-800 text-gray-300 border border-gray-700"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA button */}
-                  {product.cta && product.ctaLabel && (
-                    <Link
-                      href={product.cta}
-                      target={product.cta.startsWith('http') ? '_blank' : undefined}
-                      rel={product.cta.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-bold text-sm text-white shadow-lg transition-all duration-200 hover:scale-105 hover:brightness-110"
-                      style={{ background: product.color }}
-                    >
-                      {product.ctaLabel}
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        {/* Timeline */}
+        <Timeline data={timelineData} />
       </div>
     </section>
   )

@@ -13,25 +13,42 @@ const jsonLd = {
   name: "Nuii IT Consulting",
   url: SITE_URL,
   logo: `${SITE_URL}/nuiiLogo.png`,
+  image: `${SITE_URL}/opengraph-image`,
   description:
     "Nuii adalah firma konsultansi IT terpercaya yang membangun solusi digital — aplikasi mobile, web, backend, dan desktop — untuk komunitas dan bisnis Indonesia.",
   email: "nuiiapps3@gmail.com",
+  telephone: null,
+  priceRange: "$$",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Jakarta",
+    addressRegion: "DKI Jakarta",
     addressCountry: "ID",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: -6.2088,
+    longitude: 106.8456,
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Indonesia",
   },
   sameAs: [
     "https://github.com/nuiiapps",
     "https://www.linkedin.com/in/angga-saputra16/",
   ],
-  serviceType: [
-    "Mobile App Development",
-    "Web Development",
-    "Backend Development",
-    "Desktop Application Development",
-    "IT Consulting",
-  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Layanan IT Nuii",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Mobile App Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Web Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Backend & API Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Desktop Application Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "IT Consulting" } },
+    ],
+  },
 }
 
 export default function HomePage() {

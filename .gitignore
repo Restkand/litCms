@@ -38,6 +38,15 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# local db
+*.db
+*.db-shm
+*.db-wal
+
+# prisma helper scripts (one-time use)
+prisma/setup-turso.mjs
+prisma/fix-admin-password.mjs
 next-env.d.ts
 
 /app/generated/prisma

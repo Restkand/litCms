@@ -1,6 +1,7 @@
 import HeroSection from "@/app/components/HomeComp/HeroSection"
 import OurExperience from "@/app/components/HomeComp/OurExperience"
 import OurProducts from "@/app/components/HomeComp/OurProducts"
+import Testimonials from "@/app/components/HomeComp/Testimonials"
 import AboutUs from "@/app/components/HomeComp/AboutUs"
 import ContactUs from "@/app/components/HomeComp/ContactUs"
 import Footer from "@/app/components/HomeComp/Footer"
@@ -17,7 +18,7 @@ const jsonLd = {
   description:
     "Nuii adalah firma konsultansi IT terpercaya yang membangun solusi digital — aplikasi mobile, web, backend, dan desktop — untuk komunitas dan bisnis Indonesia.",
   email: "nuiiapps3@gmail.com",
-  telephone: null,
+  telephone: "+6289530974645",
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",
@@ -49,6 +50,33 @@ const jsonLd = {
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "IT Consulting" } },
     ],
   },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5",
+    reviewCount: "5",
+    bestRating: "5",
+    worstRating: "1",
+  },
+  review: [
+    {
+      "@type": "Review",
+      author: { "@type": "Organization", name: "Masjid Al-Furqon Bekasi" },
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      reviewBody: "Nuii membantu kami membangun Website CMS untuk masjid. Konten jadwal sholat, kajian, dan berita masjid kini dapat dikelola langsung oleh pengurus tanpa perlu keahlian teknis.",
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Organization", name: "FIFA Pay Indonesia" },
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      reviewBody: "Nuii membangun aplikasi mobile frontend PPOB kami dari nol. UI bersih, performa stabil, dan semua fitur yang kami butuhkan berjalan dengan baik.",
+    },
+    {
+      "@type": "Review",
+      author: { "@type": "Organization", name: "PT Winata Elang Jaya" },
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      reviewBody: "Sistem asset management yang dibangun Nuii sangat membantu operasional perusahaan kami. Pencatatan dan pengelolaan aset yang sebelumnya manual kini terdigitalisasi.",
+    },
+  ],
 }
 
 export default function HomePage() {
@@ -63,6 +91,7 @@ export default function HomePage() {
         <OurExperience />
         <OurProducts />
         <AboutUs />
+        <Testimonials />
         <ContactUs />
         <Footer />
       </div>

@@ -41,19 +41,19 @@ const categories: Category[] = [
     tiers: [
       {
         name: 'Esensial',
-        priceFrom: 'Rp 3 juta', priceTo: 'Rp 10 juta', timeline: '2–3 minggu',
+        priceFrom: 'Rp 5 juta', priceTo: 'Rp 10 juta', timeline: '2–3 minggu',
         description: 'Landing page atau profil usaha statis. Cocok untuk UMKM, komunitas, atau kebutuhan online presence dasar.',
         features: ['Hingga 5 halaman statis', 'Desain responsif (mobile-friendly)', 'Form kontak sederhana', 'Setup hosting & domain', 'SEO dasar (meta, sitemap)'],
       },
       {
         name: 'Profesional', badge: 'Paling Diminati',
-        priceFrom: 'Rp 15 juta', priceTo: 'Rp 40 juta', timeline: '4–7 minggu',
+        priceFrom: 'Rp 20 juta', priceTo: 'Rp 40 juta', timeline: '4–7 minggu',
         description: 'Website dengan CMS — pengelola konten bisa update artikel, berita, atau produk sendiri tanpa coding.',
         features: ['Sistem manajemen konten (CMS)', 'Autentikasi admin & multi-user', 'Blog / berita terintegrasi', 'SEO on-page & Google Analytics', 'Optimasi Core Web Vitals'],
       },
       {
         name: 'Premium',
-        priceFrom: 'Rp 40 juta', priceTo: 'Rp 120 juta', timeline: '8–16 minggu',
+        priceFrom: 'Rp 60 juta', priceTo: 'Rp 120 juta', timeline: '8–16 minggu',
         description: 'Web application kompleks dengan logika bisnis kustom, dashboard, dan integrasi API pihak ketiga.',
         features: ['Fitur bisnis kustom penuh', 'Integrasi API eksternal (payment, maps, dll)', 'Dashboard & laporan dinamis', 'Role & permission sistem', 'Skalabilitas cloud & CI/CD'],
       },

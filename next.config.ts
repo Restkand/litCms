@@ -5,9 +5,16 @@ const nextConfig: NextConfig = {
     "better-sqlite3",
     "@prisma/adapter-better-sqlite3",
     "@libsql/client",
+    "@libsql/hrana-client",
     "@prisma/adapter-libsql",
+    "@prisma/client",
     "prisma",
   ],
+  experimental: {
+    turbo: {
+      resolveExtensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+    },
+  },
 };
 
 export default nextConfig;

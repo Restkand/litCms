@@ -1,5 +1,6 @@
 import HeroSection from "@/app/components/HomeComp/HeroSection"
 import OurExperience from "@/app/components/HomeComp/OurExperience"
+import PricingRange from "@/app/components/HomeComp/PricingRange"
 import OurProducts from "@/app/components/HomeComp/OurProducts"
 import Testimonials from "@/app/components/HomeComp/Testimonials"
 import AboutUs from "@/app/components/HomeComp/AboutUs"
@@ -90,6 +91,7 @@ export default function HomePage() {
         <HeroSection />
         <OurExperience />
         <OurProducts />
+        <PricingRange />
         <AboutUs />
         <Testimonials />
         <ContactUs />

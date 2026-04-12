@@ -4,7 +4,6 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import "./globals.css";
 import { SessionProvider } from "./providers";
-import WhatsAppButton from "./components/WhatsAppButton";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuiiapp.com";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -131,7 +130,6 @@ export default function RootLayout({
           >
             <SessionProvider>
               {children}
-              <WhatsAppButton />
             </SessionProvider>
           </ConfigProvider>
         </AntdRegistry>

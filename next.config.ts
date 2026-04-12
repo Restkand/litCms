@@ -10,11 +10,6 @@ const nextConfig: NextConfig = {
     "@prisma/client",
     "prisma",
   ],
-  experimental: {
-    turbo: {
-      resolveExtensions: [".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
-    },
-  },
 };
 
 export default nextConfig;

@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
   let body: {
     name?: string
     email?: string
+    whatsapp?: string
     company?: string
     topic?: string
     message?: string
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Format permintaan tidak valid.' }, { status: 400 })
   }
 
-  const { name, email, company, topic, message } = body
+  const { name, email, whatsapp, company, topic, message } = body
 
   if (!name || !email || !topic || !message) {
     return NextResponse.json({ error: 'Semua kolom wajib diisi.' }, { status: 400 })
@@ -106,6 +107,7 @@ export async function POST(req: NextRequest) {
                   <p style="margin:0 0 8px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;">Pengirim</p>
                   <p style="margin:0 0 4px;font-size:15px;font-weight:700;color:#1e293b;">${escapeHtml(name)}</p>
                   <p style="margin:0 0 4px;font-size:13px;color:#3b82f6;"><a href="mailto:${escapeHtml(email)}" style="color:#3b82f6;text-decoration:none;">${escapeHtml(email)}</a></p>
+                  ${whatsapp ? `<p style="margin:0 0 4px;font-size:13px;color:#22c55e;"><a href="https://wa.me/62${escapeHtml(whatsapp.replace(/^0/, '').replace(/[^0-9]/g, ''))}" style="color:#22c55e;text-decoration:none;">💬 WhatsApp: +62${escapeHtml(whatsapp.replace(/^0/, ''))}</a></p>` : ''}
                   ${company ? `<p style="margin:0;font-size:13px;color:#64748b;">${escapeHtml(company)}</p>` : ''}
                 </td>
               </tr>
@@ -147,7 +149,7 @@ export async function POST(req: NextRequest) {
 Topik    : ${topicLabel}
 Nama     : ${name}
 Email    : ${email}
-${company ? `Perusahaan: ${company}\n` : ''}Waktu    : ${dateStr} WIB
+${whatsapp ? `WhatsApp : +62${whatsapp.replace(/^0/, '')}\n` : ''}${company ? `Perusahaan: ${company}\n` : ''}Waktu    : ${dateStr} WIB
 
 --- PESAN ---
 ${message}

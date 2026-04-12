@@ -78,7 +78,7 @@ Terima kasih,
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
 export default function ContactUs() {
-  const [form, setForm] = useState({ name: '', email: '', company: '', topic: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', whatsapp: '', company: '', topic: '', message: '' })
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -119,7 +119,7 @@ export default function ContactUs() {
         setStatus('error')
       } else {
         setStatus('success')
-        setForm({ name: '', email: '', company: '', topic: '', message: '' })
+        setForm({ name: '', email: '', whatsapp: '', company: '', topic: '', message: '' })
       }
     } catch {
       setErrorMsg('Gagal terhubung ke server. Periksa koneksi internet Anda.')
@@ -235,6 +235,19 @@ export default function ContactUs() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <Field label="No. WhatsApp">
+                    <div className="flex">
+                      <span className="flex items-center px-3 bg-gray-700 border border-r-0 border-gray-700 rounded-l-xl text-gray-400 text-sm select-none">+62</span>
+                      <input
+                        name="whatsapp"
+                        type="tel"
+                        value={form.whatsapp}
+                        onChange={handleChange}
+                        placeholder="8xx-xxxx-xxxx (opsional)"
+                        className="flex-1 bg-gray-800 border border-gray-700 rounded-r-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-amber-400 transition-colors"
+                      />
+                    </div>
+                  </Field>
                   <Field label="Perusahaan / Organisasi">
                     <input
                       name="company"
@@ -244,6 +257,9 @@ export default function ContactUs() {
                       className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-amber-400 transition-colors"
                     />
                   </Field>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Field label="Topik *">
                     <select
                       name="topic"

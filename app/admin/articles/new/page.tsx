@@ -4,20 +4,56 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
-import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaPen } from "react-icons/fa"
+import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaPen, FaTags, FaLayerGroup, FaSearchPlus } from "react-icons/fa"
+import ImagePicker from "../../components/ui/ImagePicker"
+
+interface Category {
+    id: string
+    name: string
+}
+
+interface Tag {
+    id: string
+    name: string
+}
 
 export default function NewArticlePage() {
     const { status } = useSession()
     const router = useRouter()
     const [saving, setSaving] = useState(false)
+
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
+    const [excerpt, setExcerpt] = useState("")
     const [published, setPublished] = useState(false)
+    const [categoryId, setCategoryId] = useState("")
+    const [selectedTags, setSelectedTags] = useState<string[]>([])
+    const [featuredImageId, setFeaturedImageId] = useState<string | null>(null)
+    const [metaTitle, setMetaTitle] = useState("")
+    const [metaDescription, setMetaDescription] = useState("")
+
+    const [categories, setCategories] = useState<Category[]>([])
+    const [tags, setTags] = useState<Tag[]>([])
     const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
 
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/admin/login")
+            return
+        }
+
+        if (status === "authenticated") {
+            const fetchData = async () => {
+                const [catsRes, tagsRes] = await Promise.all([
+                    fetch("/api/categories"),
+                    fetch("/api/tags")
+                ])
+                const catsData = await catsRes.json()
+                const tagsData = await tagsRes.json()
+                setCategories(catsData)
+                setTags(tagsData)
+            }
+            fetchData()
         }
     }, [status, router])
 
@@ -48,7 +84,17 @@ export default function NewArticlePage() {
         const response = await fetch("/api/articles", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, content, published })
+            body: JSON.stringify({
+                title,
+                content,
+                excerpt,
+                published,
+                categoryId: categoryId || null,
+                tags: selectedTags,
+                featuredImageId,
+                metaTitle,
+                metaDescription
+            })
         })
 
         setSaving(false)
@@ -59,6 +105,14 @@ export default function NewArticlePage() {
         } else {
             alert("Gagal membuat artikel")
         }
+    }
+
+    const toggleTag = (tagId: string) => {
+        setSelectedTags(prev =>
+            prev.includes(tagId)
+                ? prev.filter(id => id !== tagId)
+                : [...prev, tagId]
+        )
     }
 
     if (status === "loading") {
@@ -110,140 +164,177 @@ export default function NewArticlePage() {
                     transition={{ delay: 0.1 }}
                 >
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Title Input */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow"
-                        >
-                            <label className="block mb-3">
-                                <span className="text-gray-700 font-semibold text-lg flex items-center">
-                                    Judul Artikel
-                                    <span className="text-red-500 ml-1">*</span>
-                                </span>
-                            </label>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => {
-                                    setTitle(e.target.value)
-                                    if (errors.title) setErrors({ ...errors, title: undefined })
-                                }}
-                                placeholder="Masukkan judul artikel yang menarik..."
-                                className={`w-full px-5 py-4 text-lg border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${errors.title
-                                        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                                        : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
-                                    }`}
-                            />
-                            {errors.title && (
-                                <p className="mt-2 text-red-600 text-sm">{errors.title}</p>
-                            )}
-                        </motion.div>
-
-                        {/* Content Input */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow"
-                        >
-                            <label className="block mb-3">
-                                <span className="text-gray-700 font-semibold text-lg flex items-center">
-                                    Konten Artikel
-                                    <span className="text-red-500 ml-1">*</span>
-                                </span>
-                            </label>
-                            <textarea
-                                value={content}
-                                onChange={(e) => {
-                                    setContent(e.target.value)
-                                    if (errors.content) setErrors({ ...errors, content: undefined })
-                                }}
-                                rows={16}
-                                placeholder="Tulis konten artikel Anda di sini... Ceritakan sesuatu yang menarik!"
-                                className={`w-full px-5 py-4 text-lg border-2 rounded-xl focus:outline-none focus:ring-4 transition-all resize-none ${errors.content
-                                        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                                        : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
-                                    }`}
-                            />
-                            {errors.content && (
-                                <p className="mt-2 text-red-600 text-sm">{errors.content}</p>
-                            )}
-                            <p className="mt-3 text-sm text-gray-500">
-                                {content.length} karakter
-                            </p>
-                        </motion.div>
-
-                        {/* Published Toggle */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-gray-700 font-semibold text-lg mb-1">Status Publikasi</h3>
-                                    <p className="text-sm text-gray-500">
-                                        {published ? "Artikel akan langsung terlihat oleh publik" : "Artikel disimpan sebagai draft"}
-                                    </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Left Column: Content */}
+                            <div className="lg:col-span-2 space-y-6">
+                                {/* Title Input */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <label className="block mb-2">
+                                        <span className="text-gray-700 font-semibold flex items-center">
+                                            Judul Artikel <span className="text-red-500 ml-1">*</span>
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={title}
+                                        onChange={(e) => {
+                                            setTitle(e.target.value)
+                                            if (errors.title) setErrors({ ...errors, title: undefined })
+                                        }}
+                                        placeholder="Masukkan judul artikel..."
+                                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${errors.title ? "border-red-300 focus:border-red-500 focus:ring-red-100" : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"}`}
+                                    />
+                                    {errors.title && <p className="mt-1 text-red-600 text-sm">{errors.title}</p>}
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setPublished(!published)}
-                                    className={`relative inline-flex items-center h-12 w-24 rounded-full transition-all duration-300 focus:outline-none focus:ring-4 ${published
-                                            ? "bg-green-500 focus:ring-green-200"
-                                            : "bg-gray-300 focus:ring-gray-200"
-                                        }`}
-                                >
-                                    <span
-                                        className={`inline-block w-10 h-10 transform transition-transform duration-300 bg-white rounded-full shadow-lg ${published ? "translate-x-12" : "translate-x-1"
-                                            }`}
-                                    >
-                                        {published ? (
-                                            <FaToggleOn className="w-full h-full p-2 text-green-500" />
-                                        ) : (
-                                            <FaToggleOff className="w-full h-full p-2 text-gray-400" />
-                                        )}
-                                    </span>
-                                </button>
-                            </div>
-                        </motion.div>
 
-                        {/* Action Buttons */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="flex items-center space-x-4 pt-4"
-                        >
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
-                            >
-                                {saving ? (
-                                    <>
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        <span>Menyimpan...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <FaSave size={20} />
-                                        <span>Simpan Artikel</span>
-                                    </>
-                                )}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => router.push("/admin/articles")}
-                                className="px-8 py-4 bg-white text-gray-700 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 border-gray-200 flex items-center space-x-2"
-                            >
-                                <FaTimes size={20} />
-                                <span>Batal</span>
-                            </button>
-                        </motion.div>
+                                {/* Excerpt Input */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <label className="block mb-2 text-gray-700 font-semibold">Ringkasan (Excerpt)</label>
+                                    <textarea
+                                        value={excerpt}
+                                        onChange={(e) => setExcerpt(e.target.value)}
+                                        rows={3}
+                                        placeholder="Tulis ringkasan singkat artikel..."
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all resize-none"
+                                    />
+                                </div>
+
+                                {/* Content Input */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <label className="block mb-2">
+                                        <span className="text-gray-700 font-semibold flex items-center">
+                                            Konten Artikel <span className="text-red-500 ml-1">*</span>
+                                        </span>
+                                    </label>
+                                    <textarea
+                                        value={content}
+                                        onChange={(e) => {
+                                            setContent(e.target.value)
+                                            if (errors.content) setErrors({ ...errors, content: undefined })
+                                        }}
+                                        rows={12}
+                                        placeholder="Tulis isi artikel lengkap di sini..."
+                                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${errors.content ? "border-red-300 focus:border-red-500 focus:ring-red-100" : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"}`}
+                                    />
+                                    {errors.content && <p className="mt-1 text-red-600 text-sm">{errors.content}</p>}
+                                </div>
+
+                                {/* SEO Settings */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <h3 className="text-gray-700 font-bold text-lg mb-4 flex items-center">
+                                        <FaSearchPlus className="mr-2 text-blue-500" />
+                                        SEO Settings
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block mb-1 text-sm font-medium text-gray-600">Meta Title</label>
+                                            <input
+                                                type="text"
+                                                value={metaTitle}
+                                                onChange={(e) => setMetaTitle(e.target.value)}
+                                                placeholder="Title for search engines..."
+                                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block mb-1 text-sm font-medium text-gray-600">Meta Description</label>
+                                            <textarea
+                                                value={metaDescription}
+                                                onChange={(e) => setMetaDescription(e.target.value)}
+                                                rows={2}
+                                                placeholder="Description for search results..."
+                                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 resize-none"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Column: Settings */}
+                            <div className="space-y-6">
+                                {/* Status Toggle */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <h3 className="text-gray-700 font-bold mb-4">Status Publikasi</h3>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-gray-600">{published ? "Published" : "Draft"}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setPublished(!published)}
+                                            className={`relative inline-flex items-center h-8 w-16 rounded-full transition-all duration-300 ${published ? "bg-green-500" : "bg-gray-300"}`}
+                                        >
+                                            <span className={`inline-block w-6 h-6 transform transition-transform duration-300 bg-white rounded-full shadow ${published ? "translate-x-9" : "translate-x-1"}`}>
+                                                {published ? <FaToggleOn className="w-full h-full p-1 text-green-500" /> : <FaToggleOff className="w-full h-full p-1 text-gray-400" />}
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Image Selection */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <ImagePicker
+                                        value={featuredImageId}
+                                        onChange={setFeaturedImageId}
+                                    />
+                                </div>
+
+                                {/* Category Selection */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <h3 className="text-gray-700 font-bold mb-4 flex items-center">
+                                        <FaLayerGroup className="mr-2 text-purple-500" />
+                                        Kategori
+                                    </h3>
+                                    <select
+                                        value={categoryId}
+                                        onChange={(e) => setCategoryId(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+                                    >
+                                        <option value="">Tanpa Kategori</option>
+                                        {categories.map(cat => (
+                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Tag Selection */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <h3 className="text-gray-700 font-bold mb-4 flex items-center">
+                                        <FaTags className="mr-2 text-orange-500" />
+                                        Tag
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {tags.map(tag => (
+                                            <button
+                                                key={tag.id}
+                                                type="button"
+                                                onClick={() => toggleTag(tag.id)}
+                                                className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${selectedTags.includes(tag.id) ? "bg-blue-600 text-white shadow-md scale-105" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                                            >
+                                                {tag.name}
+                                            </button>
+                                        ))}
+                                        {tags.length === 0 && <p className="text-xs text-gray-400 italic">Belum ada tag</p>}
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex flex-col space-y-3">
+                                    <button
+                                        type="submit"
+                                        disabled={saving}
+                                        className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                                    >
+                                        {saving ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><FaSave /> <span>Simpan Artikel</span></>}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => router.push("/admin/articles")}
+                                        className="w-full py-3 bg-white text-gray-700 rounded-xl font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all border border-gray-200 flex items-center justify-center space-x-2"
+                                    >
+                                        <FaTimes /> <span>Batal</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </motion.div>
             </main>

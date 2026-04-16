@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaLayerGroup, FaTags, FaSearchPlus } from "react-icons/fa"
+import ImagePicker from "../../components/ui/ImagePicker"
 
 interface Category {
   id: string
@@ -30,6 +31,7 @@ export default function EditArticlePage() {
   const [published, setPublished] = useState(false)
   const [categoryId, setCategoryId] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [featuredImageId, setFeaturedImageId] = useState<string | null>(null)
   const [metaTitle, setMetaTitle] = useState("")
   const [metaDescription, setMetaDescription] = useState("")
 
@@ -68,7 +70,8 @@ export default function EditArticlePage() {
           setExcerpt(article.excerpt || "")
           setPublished(article.published || false)
           setCategoryId(article.categoryId || "")
-          setSelectedTags(article.tags?.map((t: any) => t.id) || [])
+          setSelectedTags(article.tags?.map((t: { id: string }) => t.id) || [])
+          setFeaturedImageId(article.featuredImageId || null)
           setMetaTitle(article.metaTitle || "")
           setMetaDescription(article.metaDescription || "")
 
@@ -119,6 +122,7 @@ export default function EditArticlePage() {
         published,
         categoryId: categoryId || null,
         tags: selectedTags,
+        featuredImageId,
         metaTitle,
         metaDescription
       })
@@ -293,6 +297,14 @@ export default function EditArticlePage() {
                       </span>
                     </button>
                   </div>
+                </div>
+
+                {/* Image Selection */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                  <ImagePicker
+                    value={featuredImageId}
+                    onChange={setFeaturedImageId}
+                  />
                 </div>
 
                 {/* Category Selection */}

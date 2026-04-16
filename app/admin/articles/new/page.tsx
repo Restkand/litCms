@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaPen, FaTags, FaLayerGroup, FaSearchPlus } from "react-icons/fa"
+import ImagePicker from "../../components/ui/ImagePicker"
 
 interface Category {
     id: string
@@ -27,6 +28,7 @@ export default function NewArticlePage() {
     const [published, setPublished] = useState(false)
     const [categoryId, setCategoryId] = useState("")
     const [selectedTags, setSelectedTags] = useState<string[]>([])
+    const [featuredImageId, setFeaturedImageId] = useState<string | null>(null)
     const [metaTitle, setMetaTitle] = useState("")
     const [metaDescription, setMetaDescription] = useState("")
 
@@ -89,6 +91,7 @@ export default function NewArticlePage() {
                 published,
                 categoryId: categoryId || null,
                 tags: selectedTags,
+                featuredImageId,
                 metaTitle,
                 metaDescription
             })
@@ -264,6 +267,14 @@ export default function NewArticlePage() {
                                             </span>
                                         </button>
                                     </div>
+                                </div>
+
+                                {/* Image Selection */}
+                                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                    <ImagePicker
+                                        value={featuredImageId}
+                                        onChange={setFeaturedImageId}
+                                    />
                                 </div>
 
                                 {/* Category Selection */}

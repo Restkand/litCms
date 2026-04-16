@@ -11,19 +11,83 @@ model User {
   email     String    @unique
   password  String
   name      String
+  role      String    @default("AUTHOR") // ADMIN, EDITOR, AUTHOR
+  bio       String?
+  image     String?   // Profile picture URL
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   articles  Article[]
 }
 
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  articles    Article[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Media {
+  id          String   @id @default(uuid())
+  filename    String
+  url         String   // Public URL (External storage like Cloudinary/Supabase)
+  key         String   // Storage provider key for easy deletion
+  mimeType    String
+  size        Int      // Bytes
+  alt         String?
+  width       Int?
+  height      Int?
+  articles    Article[] @relation("FeaturedImage")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Article {
-  id        String   @id @default(uuid())
-  title     String
-  slug      String   @unique
-  content   String
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  excerpt         String?
+  content         String
+  published       Boolean   @default(false)
+  publishedAt     DateTime?
+
+  authorId        String
+  author          User      @relation(fields: [authorId], references: [id])
+
+  categoryId      String?
+  category        Category? @relation(fields: [categoryId], references: [id])
+
+  tags            Tag[]
+
+  featuredImageId String?
+  featuredImage   Media?    @relation("FeaturedImage", fields: [featuredImageId], references: [id])
+
+  metaTitle       String?
+  metaDescription String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([slug])
+}
+
+model Setting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
 }

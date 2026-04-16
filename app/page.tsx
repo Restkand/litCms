@@ -6,6 +6,7 @@ import Testimonials from "@/app/components/HomeComp/Testimonials"
 import AboutUs from "@/app/components/HomeComp/AboutUs"
 import ContactUs from "@/app/components/HomeComp/ContactUs"
 import Footer from "@/app/components/HomeComp/Footer"
+import LatestArticles from "@/app/components/HomeComp/LatestArticles"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuiiapp.com"
 
@@ -94,6 +95,7 @@ export default function HomePage() {
         <PricingRange />
         <AboutUs />
         <Testimonials />
+        <LatestArticles />
         <ContactUs />
         <Footer />
       </div>

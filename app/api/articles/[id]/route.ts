@@ -67,7 +67,22 @@ export async function PUT(
     publishedAt
   } = body;
 
-  const data: any = {
+  const data: {
+    title?: string;
+    slug?: string;
+    content?: string;
+    published?: boolean;
+    excerpt?: string;
+    categoryId?: string;
+    featuredImageId?: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    publishedAt?: Date | null;
+    tags?: {
+      disconnect: { id: string }[];
+      connect: { id: string }[];
+    };
+  } = {
     content,
     published,
     excerpt,

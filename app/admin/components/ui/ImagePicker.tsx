@@ -34,14 +34,26 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
     }
   }, [isOpen])
 
+  // Fetch current selected image by ID on mount or when value changes (needed for edit page)
   useEffect(() => {
-    if (value && mediaItems.length > 0) {
-      const found = mediaItems.find(m => m.id === value)
-      if (found) setSelectedImage(found)
-    } else if (!value) {
+    if (!value) {
       setSelectedImage(null)
+      return
     }
-  }, [value, mediaItems])
+    // If already loaded in mediaItems, use that
+    const existing = mediaItems.find(m => m.id === value)
+    if (existing) {
+      setSelectedImage(existing)
+      return
+    }
+    // Otherwise fetch from API (e.g. on edit page initial load)
+    fetch(`/api/media/${value}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && !data.error) setSelectedImage(data)
+      })
+      .catch(() => {})
+  }, [value])
 
   const fetchMedia = async () => {
     setLoading(true)

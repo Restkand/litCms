@@ -13,7 +13,18 @@ This document provides an overview of the architecture, features, identified iss
 - **Authentication:** [NextAuth.js v5](https://authjs.dev/) (Credentials Provider)
 - **Email:** [Nodemailer](https://nodemailer.com/)
 
-## 2. Implemented Features
+## 2. Data Architecture (CMS Standard)
+
+The database schema has been upgraded to support professional CMS requirements while maintaining high performance on limited database tiers (like Turso Free).
+
+### Key Models
+- **Article:** Supports excerpts, featured images, categories, tags, and SEO metadata.
+- **Media:** Optimized for external storage. It stores public URLs and metadata rather than binary data, ensuring the Turso database remains extremely small and fast.
+- **Category & Tag:** Flexible content organization with slug-based lookups.
+- **User:** Role-based access control (ADMIN, EDITOR, AUTHOR) and profile bios.
+- **Setting:** A key-value store for site-wide configuration (e.g., site name, social links).
+
+## 3. Implemented Features
 
 ### Admin Dashboard
 - **Authentication:** Secure login for administrators via `/admin/login`.

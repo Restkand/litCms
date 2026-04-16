@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaLayerGroup, FaTags, FaSearchPlus } from "react-icons/fa"
 import ImagePicker from "../../components/ui/ImagePicker"
+import { useToast, ToastContainer } from "@/app/components/ui/Toast"
 
 interface Category {
   id: string
@@ -38,6 +39,7 @@ export default function EditArticlePage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
+  const { toast, toasts, remove } = useToast()
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -60,8 +62,8 @@ export default function EditArticlePage() {
           const tagsData = await tagsRes.json()
 
           if (article.error) {
-            alert("Gagal memuat artikel")
-            router.push("/admin/articles")
+            toast("error", "Gagal memuat artikel", "Artikel tidak ditemukan.")
+            setTimeout(() => router.push("/admin/articles"), 1500)
             return
           }
 
@@ -131,10 +133,11 @@ export default function EditArticlePage() {
     setSaving(false)
 
     if (response.ok) {
-      alert("Artikel berhasil diupdate!")
-      router.push("/admin/articles")
+      toast("success", "Artikel berhasil diupdate!", "Mengalihkan ke daftar artikel...")
+      setTimeout(() => router.push("/admin/articles"), 1500)
     } else {
-      alert("Gagal mengupdate artikel")
+      const data = await response.json().catch(() => ({}))
+      toast("error", "Gagal mengupdate artikel", data?.error || "Terjadi kesalahan, coba lagi.")
     }
   }
 
@@ -159,6 +162,7 @@ export default function EditArticlePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <ToastContainer toasts={toasts} onRemove={remove} />
       {/* Header */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}

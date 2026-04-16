@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaPen, FaTags, FaLayerGroup, FaSearchPlus } from "react-icons/fa"
 import ImagePicker from "../../components/ui/ImagePicker"
+import { useToast, ToastContainer } from "@/app/components/ui/Toast"
 
 interface Category {
     id: string
@@ -35,6 +36,7 @@ export default function NewArticlePage() {
     const [categories, setCategories] = useState<Category[]>([])
     const [tags, setTags] = useState<Tag[]>([])
     const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
+    const { toast, toasts, remove } = useToast()
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -100,10 +102,11 @@ export default function NewArticlePage() {
         setSaving(false)
 
         if (response.ok) {
-            alert("Artikel berhasil dibuat!")
-            router.push("/admin/articles")
+            toast("success", "Artikel berhasil dibuat!", "Mengalihkan ke daftar artikel...")
+            setTimeout(() => router.push("/admin/articles"), 1500)
         } else {
-            alert("Gagal membuat artikel")
+            const data = await response.json().catch(() => ({}))
+            toast("error", "Gagal membuat artikel", data?.error || "Terjadi kesalahan, coba lagi.")
         }
     }
 
@@ -128,6 +131,7 @@ export default function NewArticlePage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+            <ToastContainer toasts={toasts} onRemove={remove} />
             {/* Header */}
             <motion.header
                 initial={{ y: -100, opacity: 0 }}

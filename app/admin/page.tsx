@@ -14,7 +14,10 @@ import {
   FaTimes,
   FaEye,
   FaCheckCircle,
-  FaClock
+  FaClock,
+  FaTags,
+  FaUsers,
+  FaCog
 } from "react-icons/fa"
 
 interface Article {
@@ -87,7 +90,10 @@ export default function AdminPage() {
 
   const menuItems = [
     { title: "Dashboard", icon: FaHome, href: "/admin", active: true },
-    { title: "Artikel", icon: FaFileAlt, href: "/admin/articles", active: false, count: stats.total }
+    { title: "Artikel", icon: FaFileAlt, href: "/admin/articles", active: false, count: stats.total },
+    { title: "Tag", icon: FaTags, href: "/admin/tags", active: false },
+    { title: "User", icon: FaUsers, href: "/admin/users", active: false },
+    { title: "Settings", icon: FaCog, href: "/admin/settings", active: false },
   ]
 
   const statsData = [

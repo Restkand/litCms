@@ -7,7 +7,12 @@ export const revalidate = 0
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const article = await prisma.article.findUnique({
-        where: { slug }
+        where: { slug },
+        include: {
+            featuredImage: true,
+            author: { select: { name: true } },
+            category: { select: { name: true, slug: true } }
+        }
     })
 
     if (!article || !article.published) {
@@ -39,8 +44,27 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {/* Article Content */}
             <main className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
                 <article className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+                    {/* Featured Image */}
+                    {article.featuredImage && (
+                        <div className="relative w-full aspect-video sm:aspect-[21/9] overflow-hidden">
+                            <img
+                                src={article.featuredImage.url}
+                                alt={article.featuredImage.alt || article.title}
+                                className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60" />
+                        </div>
+                    )}
+
                     {/* Article Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 sm:px-8 py-8 sm:py-12">
+                    <div className={`px-6 sm:px-8 py-8 sm:py-12 ${article.featuredImage ? 'bg-gray-800' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
+                        {article.category && (
+                            <div className="mb-4">
+                                <span className="px-3 py-1 rounded-full bg-blue-500 bg-opacity-20 text-blue-400 text-xs font-bold uppercase tracking-wider border border-blue-500 border-opacity-30">
+                                    {article.category.name}
+                                </span>
+                            </div>
+                        )}
                         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight">
                             {article.title}
                         </h1>

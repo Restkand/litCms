@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaImage, FaPlus, FaTimes, FaCheck, FaTrash, FaExternalLinkAlt } from "react-icons/fa"
+import { FaImage, FaPlus, FaTimes, FaCheck, FaTrash } from "react-icons/fa"
 
 interface Media {
   id: string
@@ -27,6 +27,19 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
   const [isAddingNewUrl, setIsAddingNewUrl] = useState(false)
   const [newUrl, setNewUrl] = useState("")
   const [newFilename, setNewFilename] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
+  const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set())
+
+  const markFailed = (id: string) => {
+    setFailedImages(prev => new Set(prev).add(id))
+    setLoadingImages(prev => { const s = new Set(prev); s.delete(id); return s })
+  }
+  const markLoaded = (id: string, e: React.SyntheticEvent<HTMLImageElement>) => {
+    setLoadingImages(prev => { const s = new Set(prev); s.delete(id); return s })
+    // naturalWidth === 0 means the image loaded but has no content
+    if ((e.currentTarget as HTMLImageElement).naturalWidth === 0) markFailed(id)
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -53,7 +66,7 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
         if (data && !data.error) setSelectedImage(data)
       })
       .catch(() => {})
-  }, [value])
+  }, [value, mediaItems])
 
   const fetchMedia = async () => {
     setLoading(true)
@@ -61,6 +74,9 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
       const res = await fetch("/api/media")
       const data = await res.json()
       setMediaItems(data)
+      // Pre-mark all items as loading so spinners show immediately
+      setLoadingImages(new Set(data.map((m: Media) => m.id)))
+      setFailedImages(new Set())
     } catch (error) {
       console.error("Failed to fetch media:", error)
     } finally {
@@ -78,6 +94,26 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
     e.stopPropagation()
     onChange(null)
     setSelectedImage(null)
+  }
+
+  const handleDeleteMedia = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation()
+    if (!confirm("Hapus metadata gambar ini? Tindakan ini tidak dapat dibatalkan.")) return
+    setDeletingId(id)
+    try {
+      const res = await fetch(`/api/media/${id}`, { method: "DELETE" })
+      if (res.ok) {
+        setMediaItems(prev => prev.filter(m => m.id !== id))
+        if (value === id) {
+          onChange(null)
+          setSelectedImage(null)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to delete media:", error)
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   const handleAddNewUrl = async () => {
@@ -122,17 +158,30 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
       >
         {selectedImage ? (
           <>
-            <img
-              src={selectedImage.url}
-              alt={selectedImage.alt || selectedImage.filename}
-              className="w-full h-full object-cover"
-            />
+            {failedImages.has(selectedImage.id) ? (
+              <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center gap-2">
+                <FaImage size={32} className="text-gray-300" />
+                <span className="text-xs text-gray-400 px-4 text-center truncate max-w-full">{selectedImage.filename}</span>
+              </div>
+            ) : (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={selectedImage.url}
+                  alt={selectedImage.alt || selectedImage.filename}
+                  className="w-full h-full object-cover"
+                  onError={() => markFailed(selectedImage.id)}
+                  onLoad={(e) => markLoaded(selectedImage.id, e)}
+                />
+              </>
+            )}
             <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all flex items-center justify-center opacity-0 hover:opacity-100">
               <p className="text-white font-medium flex items-center">
                 <FaImage className="mr-2" /> Ganti Gambar
               </p>
             </div>
             <button
+              type="button"
               onClick={handleRemove}
               className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
               title="Hapus"
@@ -171,6 +220,7 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
                   <p className="text-sm text-gray-500">Pilih gambar untuk artikel Anda</p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                 >
@@ -181,6 +231,7 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="mb-6 flex space-x-2">
                   <button
+                    type="button"
                     onClick={() => setIsAddingNewUrl(!isAddingNewUrl)}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center"
                   >
@@ -219,6 +270,7 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
                         </div>
                       </div>
                       <button
+                        type="button"
                         onClick={handleAddNewUrl}
                         disabled={loading || !newUrl || !newFilename}
                         className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50"
@@ -245,13 +297,28 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
                       <div
                         key={item.id}
                         onClick={() => handleSelect(item)}
-                        className={`group relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${value === item.id ? "border-blue-500 ring-2 ring-blue-200" : "border-transparent hover:border-blue-300"}`}
+                        className={`group relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-gray-100 ${value === item.id ? "border-blue-500 ring-2 ring-blue-200" : "border-transparent hover:border-blue-300"}`}
                       >
-                        <img
-                          src={item.url}
-                          alt={item.filename}
-                          className="w-full h-full object-cover"
-                        />
+                        {failedImages.has(item.id) ? (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-1 p-2 bg-gray-100">
+                            <FaImage size={24} className="text-gray-300" />
+                            <span className="text-[9px] text-gray-400 text-center leading-tight break-all line-clamp-2">{item.filename}</span>
+                          </div>
+                        ) : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.url}
+                            alt={item.filename}
+                            className="w-full h-full object-cover"
+                            onError={() => markFailed(item.id)}
+                            onLoad={(e) => markLoaded(item.id, e)}
+                          />
+                        )}
+                        {loadingImages.has(item.id) && !failedImages.has(item.id) && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                            <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                          </div>
+                        )}
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
                           {value === item.id && (
                             <div className="bg-blue-500 text-white p-1 rounded-full shadow-lg">
@@ -262,6 +329,17 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
                         <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                           <p className="text-[10px] text-white truncate font-medium">{item.filename}</p>
                         </div>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteMedia(e, item.id)}
+                          disabled={deletingId === item.id}
+                          className="absolute top-1.5 right-1.5 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all shadow-md disabled:opacity-50"
+                          title="Hapus"
+                        >
+                          {deletingId === item.id
+                            ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            : <FaTrash size={10} />}
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -270,6 +348,7 @@ export default function ImagePicker({ value, onChange, label = "Gambar Unggulan"
 
               <div className="p-4 bg-gray-50 border-t flex justify-end">
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="px-6 py-2 text-sm font-bold text-gray-700 hover:text-gray-900 transition-colors"
                 >

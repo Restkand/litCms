@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { canManageUsers, isSuperAdmin } from "@/lib/roles";
 import bcrypt from "bcryptjs";
@@ -81,7 +82,7 @@ export async function PUT(
     name?: string;
     email?: string;
     password?: string;
-    role?: string;
+    role?: Role;
     bio?: string;
   } = { name, email, bio };
 
@@ -90,7 +91,7 @@ export async function PUT(
     if (role === "SUPER_ADMIN" && !isSuperAdmin(sessionRole)) {
       return NextResponse.json({ error: "Forbidden: Only Super Admin can assign Super Admin role" }, { status: 403 });
     }
-    data.role = role;
+    data.role = role as Role;
   }
 
   if (password) {

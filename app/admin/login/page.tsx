@@ -159,32 +159,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-gray-200 space-y-4">
-                        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                            <p className="text-xs font-semibold text-blue-700 mb-2">Demo Credentials</p>
-                            <div className="space-y-1 text-xs text-blue-800 font-mono">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-blue-600">Email</span>
-                                    <span className="font-semibold">admin@cms.com</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-blue-600">Password</span>
-                                    <span className="font-semibold">admin123</span>
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setEmail("admin@cms.com")
-                                    setPassword("admin123")
-                                    setError("")
-                                    setShowErrorPopup(false)
-                                }}
-                                className="mt-3 w-full py-1.5 px-3 rounded-md text-xs font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
-                            >
-                                Gunakan Akun Demo
-                            </button>
-                        </div>
+                    <div className="mt-6 pt-6 border-t border-gray-200">
                         <p className="text-center text-xs text-gray-500">
                             Akses terbatas hanya untuk administrator
                         </p>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { canManageUsers } from "@/lib/roles";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
@@ -8,6 +9,10 @@ export async function GET() {
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!canManageUsers(session.user.role)) {
+    return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
   }
 
   const users = await prisma.user.findMany({
@@ -34,13 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Ideally check if current user is ADMIN
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true }
-  });
-
-  if (currentUser?.role !== "ADMIN") {
+  if (!canManageUsers(session.user.role)) {
     return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
   }
 
@@ -49,6 +48,11 @@ export async function POST(request: Request) {
 
   if (!name || !email || !password) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  // Only SUPER_ADMIN can create another SUPER_ADMIN
+  if (role === "SUPER_ADMIN" && session.user.role !== "SUPER_ADMIN") {
+    return NextResponse.json({ error: "Forbidden: Only Super Admin can create Super Admin accounts" }, { status: 403 });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

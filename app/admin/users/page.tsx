@@ -17,6 +17,8 @@ import {
     FaEnvelope
 } from "react-icons/fa"
 
+import { canManageUsers, isSuperAdmin } from "@/lib/roles"
+
 interface User {
     id: string
     name: string
@@ -69,9 +71,14 @@ export default function UsersPage() {
             return
         }
         if (status === "authenticated") {
+            // Guard: only ADMIN and SUPER_ADMIN may access this page
+            if (!canManageUsers(session?.user?.role ?? '')) {
+                router.replace("/admin")
+                return
+            }
             fetchUsers()
         }
-    }, [status, router, fetchUsers])
+    }, [status, router, fetchUsers, session])
 
     const handleOpenModal = (user: User | null = null) => {
         setEditingUser(user)
@@ -124,7 +131,11 @@ export default function UsersPage() {
         }
     }
 
-    const handleDelete = async (id: string, name: string) => {
+    const handleDelete = async (id: string, name: string, role: string) => {
+        if (isSuperAdmin(role)) {
+            alert("Super Admin tidak dapat dihapus.")
+            return
+        }
         if (id === session?.user?.id) {
             alert("Anda tidak bisa menghapus akun Anda sendiri.")
             return
@@ -216,11 +227,12 @@ export default function UsersPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                            user.role === 'SUPER_ADMIN' ? 'bg-red-100 text-red-700' :
                                             user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' :
                                             user.role === 'EDITOR' ? 'bg-blue-100 text-blue-700' :
                                             'bg-gray-100 text-gray-700'
                                         }`}>
-                                            {user.role}
+                                            {user.role.replace('_', ' ')}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600 text-center">
@@ -235,10 +247,10 @@ export default function UsersPage() {
                                             <FaEdit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(user.id, user.name)}
+                                            onClick={() => handleDelete(user.id, user.name, user.role)}
                                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30"
-                                            disabled={user.id === session?.user?.id}
-                                            title="Hapus"
+                                            disabled={user.id === session?.user?.id || isSuperAdmin(user.role)}
+                                            title={isSuperAdmin(user.role) ? "Super Admin tidak dapat dihapus" : "Hapus"}
                                         >
                                             <FaTrash size={16} />
                                         </button>
@@ -320,6 +332,9 @@ export default function UsersPage() {
                                             onChange={(e) => setFormData({...formData, role: e.target.value})}
                                             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                                         >
+                                            {session?.user?.role === 'SUPER_ADMIN' && (
+                                                <option value="SUPER_ADMIN">SUPER ADMIN</option>
+                                            )}
                                             <option value="ADMIN">ADMIN</option>
                                             <option value="EDITOR">EDITOR</option>
                                             <option value="AUTHOR">AUTHOR</option>

@@ -20,6 +20,7 @@ import {
   FaCog,
   FaLayerGroup
 } from "react-icons/fa"
+import { getAllowedMenus } from "@/lib/roles"
 
 interface Article {
   id: string
@@ -89,7 +90,7 @@ export default function AdminPage() {
     return null
   }
 
-  const menuItems = [
+  const allMenuItems = [
     { title: "Dashboard", icon: FaHome, href: "/admin", active: true },
     { title: "Artikel", icon: FaFileAlt, href: "/admin/articles", active: false, count: stats.total },
     { title: "Kategori", icon: FaLayerGroup, href: "/admin/categories", active: false },
@@ -97,6 +98,9 @@ export default function AdminPage() {
     { title: "User", icon: FaUsers, href: "/admin/users", active: false },
     { title: "Settings", icon: FaCog, href: "/admin/settings", active: false },
   ]
+
+  const allowedMenus = getAllowedMenus(session.user.role ?? '')
+  const menuItems = allMenuItems.filter(item => allowedMenus.has(item.href))
 
   const statsData = [
     {

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
+import { canManageUsers, isSuperAdmin } from "@/lib/roles";
 import bcrypt from "bcryptjs";
 
 export async function GET(
@@ -14,6 +16,12 @@ export async function GET(
   }
 
   const { id } = await params;
+
+  // Users can read their own profile; admins can read any
+  if (session.user.id !== id && !canManageUsers(session.user.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
@@ -45,15 +53,26 @@ export async function PUT(
   }
 
   const { id } = await params;
+  const sessionRole = session.user.role;
 
-  // Check permission: Self or Admin
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true }
+  // Self-edit allowed; admins can edit anyone
+  if (session.user.id !== id && !canManageUsers(sessionRole)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Fetch target user to check their role
+  const targetUser = await prisma.user.findUnique({
+    where: { id },
+    select: { role: true },
   });
 
-  if (session.user.id !== id && currentUser?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!targetUser) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  // Only SUPER_ADMIN can edit another SUPER_ADMIN
+  if (isSuperAdmin(targetUser.role) && !isSuperAdmin(sessionRole)) {
+    return NextResponse.json({ error: "Forbidden: Cannot edit Super Admin" }, { status: 403 });
   }
 
   const body = await request.json();
@@ -63,13 +82,16 @@ export async function PUT(
     name?: string;
     email?: string;
     password?: string;
-    role?: string;
-    bio?: string
+    role?: Role;
+    bio?: string;
   } = { name, email, bio };
 
-  // Only Admin can change role
-  if (role && currentUser?.role === "ADMIN") {
-    data.role = role;
+  // Role changes: only SUPER_ADMIN can assign SUPER_ADMIN; ADMIN can assign others
+  if (role && canManageUsers(sessionRole)) {
+    if (role === "SUPER_ADMIN" && !isSuperAdmin(sessionRole)) {
+      return NextResponse.json({ error: "Forbidden: Only Super Admin can assign Super Admin role" }, { status: 403 });
+    }
+    data.role = role as Role;
   }
 
   if (password) {
@@ -100,13 +122,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Only Admin can delete users
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true }
-  });
-
-  if (currentUser?.role !== "ADMIN") {
+  if (!canManageUsers(session.user.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -114,7 +130,21 @@ export async function DELETE(
 
   // Cannot delete yourself
   if (id === session.user.id) {
-    return NextResponse.json({ error: "Cannot delete yourself" }, { status: 400 });
+    return NextResponse.json({ error: "Cannot delete your own account" }, { status: 400 });
+  }
+
+  // SUPER_ADMIN can never be deleted via API
+  const targetUser = await prisma.user.findUnique({
+    where: { id },
+    select: { role: true },
+  });
+
+  if (!targetUser) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  if (isSuperAdmin(targetUser.role)) {
+    return NextResponse.json({ error: "Forbidden: Super Admin cannot be deleted" }, { status: 403 });
   }
 
   try {

@@ -6,13 +6,6 @@ datasource db {
   provider = "sqlite"
 }
 
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  EDITOR
-  AUTHOR
-}
-
 model User {
   id        String    @id @default(uuid())
   email     String    @unique
@@ -20,7 +13,7 @@ model User {
   name      String
   role      Role      @default(AUTHOR)
   bio       String?
-  image     String?   // Profile picture URL
+  image     String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   articles  Article[]
@@ -31,33 +24,33 @@ model Category {
   name        String    @unique
   slug        String    @unique
   description String?
-  articles    Article[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  articles    Article[]
 }
 
 model Tag {
   id        String    @id @default(uuid())
   name      String    @unique
   slug      String    @unique
-  articles  Article[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  articles  Article[] @relation("ArticleToTag")
 }
 
 model Media {
-  id          String   @id @default(uuid())
-  filename    String
-  url         String   // Public URL (External storage like Cloudinary/Supabase)
-  key         String   // Storage provider key for easy deletion
-  mimeType    String
-  size        Int      // Bytes
-  alt         String?
-  width       Int?
-  height      Int?
-  articles    Article[] @relation("FeaturedImage")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String    @id @default(uuid())
+  filename  String
+  url       String
+  key       String
+  mimeType  String
+  size      Int
+  alt       String?
+  width     Int?
+  height    Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[] @relation("FeaturedImage")
 }
 
 model Article {
@@ -68,23 +61,17 @@ model Article {
   content         String
   published       Boolean   @default(false)
   publishedAt     DateTime?
-
   authorId        String
-  author          User      @relation(fields: [authorId], references: [id])
-
   categoryId      String?
-  category        Category? @relation(fields: [categoryId], references: [id])
-
-  tags            Tag[]
-
   featuredImageId String?
-  featuredImage   Media?    @relation("FeaturedImage", fields: [featuredImageId], references: [id])
-
   metaTitle       String?
   metaDescription String?
-
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  featuredImage   Media?    @relation("FeaturedImage", fields: [featuredImageId], references: [id])
+  category        Category? @relation(fields: [categoryId], references: [id])
+  author          User      @relation(fields: [authorId], references: [id])
+  tags            Tag[]     @relation("ArticleToTag")
 
   @@index([authorId])
   @@index([categoryId])
@@ -97,4 +84,11 @@ model Setting {
   value       String
   description String?
   updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  AUTHOR
 }

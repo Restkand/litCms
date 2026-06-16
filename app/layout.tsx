@@ -1,107 +1,111 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import "./globals.css";
 import { SessionProvider } from "./providers";
+import { getLocale } from "@/lib/i18n";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuiiapp.com";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+const serif = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+});
+const sans = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
-  title: {
-    default: "Nuii — IT Consulting & Digital Solutions",
-    template: "%s | Nuii",
-  },
-  description:
-    "Nuii adalah firma konsultansi IT terpercaya yang membangun solusi digital — aplikasi mobile, web, backend, dan desktop — untuk komunitas dan bisnis Indonesia.",
-  keywords: [
-    "Nuii",
-    "Nuii App",
-    "Nuii IT Consulting",
-    "konsultansi IT Indonesia",
-    "jasa pembuatan aplikasi",
-    "jasa pembuatan website",
-    "pengembangan aplikasi mobile",
-    "software house Indonesia",
-    "software house Jakarta",
-    "React Native Expo",
-    "Next.js developer Indonesia",
-    "WPF .NET desktop",
-    "FIFA Pay",
-    "Alfurqon CMS",
-    "Kharites",
-    "Asset Control",
-    "aplikasi mobile murah",
-    "website murah Jakarta",
-    "IT consultant Jakarta",
-    "developer freelance Indonesia",
-  ],
-  authors: [{ name: "Nuii IT Consulting", url: SITE_URL }],
-  creator: "Nuii IT Consulting",
-  publisher: "Nuii IT Consulting",
+const DESC_ID =
+  "NUII adalah perusahaan teknologi & R&D Indonesia yang membangun produknya sendiri — aplikasi, website, sistem, dan perangkat IoT — serta terbuka untuk kerja sama pengembangan.";
+const DESC_EN =
+  "NUII is an Indonesian technology & R&D company that builds its own products — apps, websites, systems, and IoT devices — and is open to development partnerships.";
 
-  icons: {
-    icon: [
-      { url: "/nuiiLogo.png", type: "image/png" },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const isEn = locale === "en";
+  const description = isEn ? DESC_EN : DESC_ID;
+  const title = isEn
+    ? "NUII — Technology & R&D That Builds Its Own Products"
+    : "NUII — Teknologi & R&D yang Membangun Produknya Sendiri";
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: title, template: "%s | NUII" },
+    description,
+    keywords: [
+      "NUII",
+      "perusahaan teknologi Indonesia",
+      "R&D Indonesia",
+      "pengembangan produk IoT",
+      "perangkat IoT GPS BLE",
+      "SAFAR tracking jamaah",
+      "pengembangan aplikasi mobile",
+      "pengembangan website & sistem",
+      "aplikasi desktop",
+      "kerja sama pengembangan teknologi",
+      "white-label sistem pemantauan",
+      "Wisezone ISP billing",
+      "FIFA Pay PPOB",
+      "Kharites membership",
     ],
-    apple: "/nuiiLogo.png",
-    shortcut: "/nuiiLogo.png",
-  },
-
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: SITE_URL,
-    siteName: "Nuii IT Consulting",
-    title: "Nuii — IT Consulting & Digital Solutions",
-    description:
-      "Nuii membangun solusi digital inovatif — mobile, web, backend, dan desktop — untuk komunitas dan bisnis Indonesia.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Nuii IT Consulting — Solusi Digital Transparan & Terjangkau",
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "Nuii — IT Consulting & Digital Solutions",
-    description:
-      "Nuii membangun solusi digital inovatif untuk komunitas dan bisnis Indonesia.",
-    images: ["/opengraph-image"],
-    creator: "@nuiiapps",
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    authors: [{ name: "NUII", url: SITE_URL }],
+    creator: "NUII",
+    publisher: "NUII",
+    icons: {
+      icon: [{ url: "/nuiiLogo.png", type: "image/png" }],
+      apple: "/nuiiLogo.png",
+      shortcut: "/nuiiLogo.png",
+    },
+    openGraph: {
+      type: "website",
+      locale: isEn ? "en_US" : "id_ID",
+      url: SITE_URL,
+      siteName: "NUII",
+      title,
+      description,
+      images: [
+        { url: "/opengraph-image", width: 1200, height: 630, alt: "NUII — Teknologi & R&D Indonesia" },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/opengraph-image"],
+      creator: "@nuiiapps",
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
     },
-  },
+    alternates: { canonical: SITE_URL },
+  };
+}
 
-  alternates: {
-    canonical: SITE_URL,
-  },
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
       <body suppressHydrationWarning>
         {GA_ID && (
           <>
@@ -123,7 +127,7 @@ export default function RootLayout({
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: "#1890ff",
+                colorPrimary: "#20413A",
                 borderRadius: 6,
               },
             }}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { getI18n, getLocale } from "@/lib/i18n"
 import { pickArticle, hasEnglish } from "@/lib/articleLang"
+import { toArticleHtml, htmlToPlain } from "@/lib/contentHtml"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuiiapp.com"
 
@@ -72,7 +73,8 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   const date = new Intl.DateTimeFormat(locale === "en" ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" }).format(
     article.publishedAt ?? article.createdAt,
   )
-  const words = c.content.trim().split(/\s+/).length
+  const contentHtml = toArticleHtml(c.content)
+  const words = htmlToPlain(c.content).split(/\s+/).filter(Boolean).length
   const readTime = Math.max(1, Math.round(words / 200))
 
   const related = await prisma.article.findMany({
@@ -152,15 +154,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
 
       {/* body */}
       <article className="mx-auto max-w-[760px] px-6 pb-10 pt-10 md:px-10">
-        <div>
-          {c.content.split("\n").map((para, idx) =>
-            para.trim() ? (
-              <p key={idx} style={{ marginBottom: 22, color: "#2C2A22", fontSize: 18, lineHeight: 1.85 }}>
-                {para}
-              </p>
-            ) : null,
-          )}
-        </div>
+        <div className="article-prose" dangerouslySetInnerHTML={{ __html: contentHtml }} />
 
         {article.tags.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-2">

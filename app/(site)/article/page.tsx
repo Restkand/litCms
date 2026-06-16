@@ -3,6 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { getI18n } from "@/lib/i18n"
+import { pickArticle, hasEnglish } from "@/lib/articleLang"
 import ArticleToolbar from "./ArticleToolbar"
 
 export const revalidate = 60
@@ -42,7 +43,14 @@ export default async function ArticleListPage({ searchParams }: { searchParams: 
         ? { category: { slug: categoryFilter } }
         : {}),
     ...(query
-      ? { OR: [{ title: { contains: query } }, { excerpt: { contains: query } }] }
+      ? {
+          OR: [
+            { title: { contains: query } },
+            { excerpt: { contains: query } },
+            { titleEn: { contains: query } },
+            { excerptEn: { contains: query } },
+          ],
+        }
       : {}),
   }
 
@@ -106,7 +114,7 @@ export default async function ArticleListPage({ searchParams }: { searchParams: 
             <div className="relative min-h-[300px] md:min-h-[340px]">
               {featured.featuredImage?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={featured.featuredImage.url} alt={featured.featuredImage.alt || featured.title} className="absolute inset-0 h-full w-full object-cover" />
+                <img src={featured.featuredImage.url} alt={featured.featuredImage.alt || pickArticle(featured, locale).title} className="absolute inset-0 h-full w-full object-cover" />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center" style={{ background: "repeating-linear-gradient(135deg,#16302A,#16302A 11px,#1b3a32 11px,#1b3a32 22px)" }}>
                   <span className="font-mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "#7E978B" }}>[ featured image ]</span>
@@ -119,9 +127,14 @@ export default async function ArticleListPage({ searchParams }: { searchParams: 
                 <span className="font-mono" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#9FB3A8" }}>
                   {featured.category ? `${featured.category.name} · ` : ""}{fmtDate(featured.publishedAt ?? featured.createdAt)}
                 </span>
+                {locale === "en" && !hasEnglish(featured) && (
+                  <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: "#E0B49E", border: "1px solid #6E5140", borderRadius: 99, padding: "3px 9px" }}>
+                    {t.enUnavailable}
+                  </span>
+                )}
               </div>
-              <h2 className="font-serif" style={{ fontSize: 36, lineHeight: 1.1, color: "#F1ECE0", marginBottom: 14, letterSpacing: "-0.01em" }}>{featured.title}</h2>
-              {featured.excerpt && <p style={{ fontSize: 15.5, lineHeight: 1.7, color: "#B9C5BD", marginBottom: 22, maxWidth: "48ch" }}>{featured.excerpt}</p>}
+              <h2 className="font-serif" style={{ fontSize: 36, lineHeight: 1.1, color: "#F1ECE0", marginBottom: 14, letterSpacing: "-0.01em" }}>{pickArticle(featured, locale).title}</h2>
+              {pickArticle(featured, locale).excerpt && <p style={{ fontSize: 15.5, lineHeight: 1.7, color: "#B9C5BD", marginBottom: 22, maxWidth: "48ch" }}>{pickArticle(featured, locale).excerpt}</p>}
               <span className="font-mono" style={{ fontSize: 13, color: "#BF6440", fontWeight: 500 }}>{t.read}</span>
             </div>
           </Link>
@@ -144,11 +157,13 @@ export default async function ArticleListPage({ searchParams }: { searchParams: 
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-x-7 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-            {gridArticles.map((a) => (
+            {gridArticles.map((a) => {
+              const ac = pickArticle(a, locale)
+              return (
               <Link key={a.id} href={`/article/${a.slug}`} className="flex flex-col" style={{ textDecoration: "none" }}>
                 {a.featuredImage?.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={a.featuredImage.url} alt={a.featuredImage.alt || a.title} className="mb-4 h-[184px] w-full rounded-[10px] object-cover" />
+                  <img src={a.featuredImage.url} alt={a.featuredImage.alt || ac.title} className="mb-4 h-[184px] w-full rounded-[10px] object-cover" />
                 ) : (
                   <div className="mb-4 flex h-[184px] items-center justify-center rounded-[10px]" style={{ background: "repeating-linear-gradient(135deg,#E0D6C0,#E0D6C0 10px,#D8CDB4 10px,#D8CDB4 20px)" }}>
                     <span className="font-mono" style={{ fontSize: 11, color: "#9A9078" }}>[ thumbnail ]</span>
@@ -157,11 +172,17 @@ export default async function ArticleListPage({ searchParams }: { searchParams: 
                 <div className="mb-[10px] flex items-center gap-3">
                   {a.category && <span className="font-mono" style={{ fontSize: 11, color: "#BF6440", textTransform: "uppercase", letterSpacing: "0.08em" }}>{a.category.name}</span>}
                   <span className="font-mono" style={{ fontSize: 11, color: "#9A9686" }}>{fmtDate(a.publishedAt ?? a.createdAt)}</span>
+                  {locale === "en" && !hasEnglish(a) && (
+                    <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: "#BF6440", border: "1px solid #E4BCA9", borderRadius: 99, padding: "2px 8px" }}>
+                      {t.enUnavailable}
+                    </span>
+                  )}
                 </div>
-                <h3 className="font-serif" style={{ fontSize: 22, lineHeight: 1.2, color: "#16302A", marginBottom: 8 }}>{a.title}</h3>
-                {a.excerpt && <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A574C" }}>{a.excerpt}</p>}
+                <h3 className="font-serif" style={{ fontSize: 22, lineHeight: 1.2, color: "#16302A", marginBottom: 8 }}>{ac.title}</h3>
+                {ac.excerpt && <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A574C" }}>{ac.excerpt}</p>}
               </Link>
-            ))}
+              )
+            })}
           </div>
         )}
 

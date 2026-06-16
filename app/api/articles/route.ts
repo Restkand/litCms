@@ -34,7 +34,12 @@ export async function POST(request: Request) {
     featuredImageId,
     metaTitle,
     metaDescription,
-    publishedAt
+    publishedAt,
+    titleEn,
+    excerptEn,
+    contentEn,
+    metaTitleEn,
+    metaDescriptionEn
   } = body;
 
   if (!title || !content) {
@@ -57,6 +62,11 @@ export async function POST(request: Request) {
         featuredImageId,
         metaTitle,
         metaDescription,
+        titleEn: titleEn || null,
+        excerptEn: excerptEn || null,
+        contentEn: contentEn || null,
+        metaTitleEn: metaTitleEn || null,
+        metaDescriptionEn: metaDescriptionEn || null,
         tags: tags ? {
           connect: tags.map((id: string) => ({ id }))
         } : undefined

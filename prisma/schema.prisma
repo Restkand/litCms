@@ -66,6 +66,11 @@ model Article {
   featuredImageId String?
   metaTitle       String?
   metaDescription String?
+  titleEn           String?
+  excerptEn         String?
+  contentEn         String?
+  metaTitleEn       String?
+  metaDescriptionEn String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   featuredImage   Media?    @relation("FeaturedImage", fields: [featuredImageId], references: [id])

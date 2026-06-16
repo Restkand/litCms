@@ -125,12 +125,12 @@ export default async function TentangPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ borderTop: "1.5px solid #20413A" }}>
-          <div className="md:border-r md:pr-9" style={{ padding: "32px 0", borderColor: "#D6CBB0" }}>
+          <div className="md:border-r md:pr-12" style={{ padding: "32px 0", borderColor: "#D6CBB0" }}>
             <div className="mb-[14px] font-mono" style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#BF6440" }}>{t.s5SafarTag}</div>
             <h3 className="font-serif" style={{ fontSize: 30, color: "#16302A", marginBottom: 12, lineHeight: 1.1 }}>{t.s5SafarTitle}</h3>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: "#3A382F" }}>{t.s5SafarBody}</p>
           </div>
-          <div className="md:pl-9" style={{ padding: "32px 0" }}>
+          <div className="md:pl-12" style={{ padding: "32px 0" }}>
             <div className="mb-[14px] font-mono" style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3E7A5C" }}>{t.s5SistemTag}</div>
             <h3 className="font-serif" style={{ fontSize: 30, color: "#16302A", marginBottom: 12, lineHeight: 1.1 }}>{t.s5SistemTitle}</h3>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: "#3A382F" }}>{t.s5SistemBody}</p>

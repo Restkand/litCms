@@ -6,7 +6,9 @@ import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { FaSave, FaTimes, FaArrowLeft, FaToggleOn, FaToggleOff, FaLayerGroup, FaTags, FaSearchPlus } from "react-icons/fa"
 import ImagePicker from "../../components/ui/ImagePicker"
+import RichTextEditor from "../../components/ui/RichTextEditor"
 import { useToast, ToastContainer } from "@/app/components/ui/Toast"
+import { htmlToPlain } from "@/lib/contentHtml"
 
 interface Category {
   id: string
@@ -110,7 +112,7 @@ export default function EditArticlePage() {
       newErrors.title = "Judul artikel wajib diisi"
     }
 
-    if (!content.trim()) {
+    if (!htmlToPlain(content).trim()) {
       newErrors.content = "Konten artikel wajib diisi"
     }
 
@@ -273,15 +275,13 @@ export default function EditArticlePage() {
                       Konten Artikel <span className="text-red-500 ml-1">*</span>
                     </span>
                   </label>
-                  <textarea
+                  <RichTextEditor
                     value={content}
-                    onChange={(e) => {
-                      setContent(e.target.value)
+                    onChange={(html) => {
+                      setContent(html)
                       if (errors.content) setErrors({ ...errors, content: undefined })
                     }}
-                    rows={12}
                     placeholder="Tulis isi artikel lengkap di sini..."
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${errors.content ? "border-red-300 focus:border-red-500 focus:ring-red-100" : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"}`}
                   />
                   {errors.content && <p className="mt-1 text-red-600 text-sm">{errors.content}</p>}
                 </div>
@@ -341,12 +341,10 @@ export default function EditArticlePage() {
                   </div>
                   <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                     <label className="block mb-2 text-gray-700 font-semibold">Content (English)</label>
-                    <textarea
+                    <RichTextEditor
                       value={contentEn}
-                      onChange={(e) => setContentEn(e.target.value)}
-                      rows={12}
+                      onChange={setContentEn}
                       placeholder="Full article content in English..."
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
                     />
                   </div>
                   <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">

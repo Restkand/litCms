@@ -66,3 +66,182 @@ textarea,
 select {
   font-family: inherit;
 }
+
+/* ===== Editor WYSIWYG (admin) ===== */
+.nuii-editor {
+  min-height: 280px;
+  padding: 14px 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1f2937;
+}
+.nuii-editor:focus {
+  outline: none;
+}
+.nuii-editor p {
+  margin: 0 0 12px;
+}
+.nuii-editor h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 18px 0 10px;
+  color: #111827;
+}
+.nuii-editor h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+  color: #111827;
+}
+.nuii-editor ul,
+.nuii-editor ol {
+  padding-left: 24px;
+  margin: 0 0 12px;
+}
+.nuii-editor ul {
+  list-style: disc;
+}
+.nuii-editor ol {
+  list-style: decimal;
+}
+.nuii-editor li {
+  margin: 4px 0;
+}
+.nuii-editor blockquote {
+  border-left: 3px solid #c4b5fd;
+  padding-left: 14px;
+  color: #4b5563;
+  font-style: italic;
+  margin: 0 0 12px;
+}
+.nuii-editor a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+.nuii-editor strong {
+  font-weight: 700;
+}
+/* placeholder saat kosong */
+.nuii-editor.ProseMirror p.is-editor-empty:first-child::before,
+.nuii-editor p.is-empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ===== Konten artikel publik (Pinus & Presisi) ===== */
+.article-prose {
+  color: #2c2a22;
+  font-size: 18px;
+  line-height: 1.85;
+}
+.article-prose > :first-child {
+  margin-top: 0;
+}
+.article-prose p {
+  margin: 0 0 22px;
+}
+.article-prose h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #16302a;
+  margin: 44px 0 16px;
+}
+.article-prose h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  color: #16302a;
+  margin: 34px 0 12px;
+}
+.article-prose h4 {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bf6440;
+  margin: 30px 0 10px;
+}
+.article-prose strong {
+  font-weight: 700;
+  color: #16302a;
+}
+.article-prose em {
+  font-style: italic;
+}
+.article-prose a {
+  color: #bf6440;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.article-prose a:hover {
+  color: #a4502f;
+}
+.article-prose ul,
+.article-prose ol {
+  margin: 0 0 22px;
+  padding-left: 26px;
+}
+.article-prose ul {
+  list-style: disc;
+}
+.article-prose ol {
+  list-style: decimal;
+}
+.article-prose li {
+  margin: 8px 0;
+  padding-left: 4px;
+}
+.article-prose li::marker {
+  color: #bf6440;
+}
+.article-prose blockquote {
+  margin: 32px 0;
+  padding: 4px 0 4px 28px;
+  border-left: 3px solid #bf6440;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 24px;
+  line-height: 1.45;
+  color: #20413a;
+}
+.article-prose blockquote p {
+  margin: 0;
+}
+.article-prose hr {
+  border: none;
+  border-top: 1px solid #d6cbb0;
+  margin: 40px 0;
+}
+.article-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 28px 0;
+}
+.article-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: #eae3d3;
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+.article-prose pre {
+  background: #16302a;
+  color: #e3d9c3;
+  padding: 18px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 0 22px;
+}
+.article-prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}

@@ -52,21 +52,62 @@ export default async function BerandaPage() {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "NUII",
-    url: SITE_URL,
-    logo: `${SITE_URL}/nuiiLogo.png`,
-    image: `${SITE_URL}/opengraph-image`,
-    description: dict.footer.tagline,
-    email: "nuiiapps3@gmail.com",
-    foundingDate: "2022",
-    address: { "@type": "PostalAddress", addressCountry: "ID" },
-    areaServed: { "@type": "Country", name: "Indonesia" },
-    sameAs: ["https://github.com/nuiiapps", "https://www.linkedin.com/in/angga-saputra16/"],
-    makesOffer: PRODUCTS.map((p) => ({
-      "@type": "Offer",
-      itemOffered: { "@type": "Product", name: p.name, description: locale === "en" ? p.descEn : p.descId },
-    })),
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "NUII",
+        alternateName: "Nuii",
+        url: SITE_URL,
+        logo: `${SITE_URL}/nuiiLogo.png`,
+        image: `${SITE_URL}/opengraph-image`,
+        description: dict.footer.tagline,
+        email: "nuiiapps3@gmail.com",
+        foundingDate: "2022",
+        address: { "@type": "PostalAddress", addressCountry: "ID" },
+        areaServed: { "@type": "Country", name: "Indonesia" },
+        sameAs: ["https://github.com/nuiiapps", "https://www.linkedin.com/in/angga-saputra16/"],
+        makesOffer: PRODUCTS.map((p) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Product", name: p.name, description: locale === "en" ? p.descEn : p.descId },
+        })),
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "NUII",
+        alternateName: "Nuii",
+        inLanguage: locale === "en" ? "en" : "id",
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/article?q={search_term_string}` },
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "@id": `${SITE_URL}/#nav-produk`,
+        position: 1,
+        name: dict.nav.produk,
+        url: `${SITE_URL}/produk`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "@id": `${SITE_URL}/#nav-tentang`,
+        position: 2,
+        name: dict.nav.tentang,
+        url: `${SITE_URL}/tentang`,
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "@id": `${SITE_URL}/#nav-artikel`,
+        position: 3,
+        name: dict.nav.artikel,
+        url: `${SITE_URL}/article`,
+      },
+    ],
   }
 
   return (

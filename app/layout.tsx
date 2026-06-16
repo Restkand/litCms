@@ -31,17 +31,17 @@ const mono = IBM_Plex_Mono({
 });
 
 const DESC_ID =
-  "NUII adalah perusahaan teknologi & R&D Indonesia yang membangun produknya sendiri — aplikasi, website, sistem, dan perangkat IoT — serta terbuka untuk kerja sama pengembangan.";
+  "NUII adalah perusahaan teknologi & R&D Indonesia yang merancang, membangun, dan menjalankan produknya sendiri — perangkat IoT, aplikasi, website, dan sistem. Terbuka untuk kerja sama pengembangan.";
 const DESC_EN =
-  "NUII is an Indonesian technology & R&D company that builds its own products — apps, websites, systems, and IoT devices — and is open to development partnerships.";
+  "NUII is an Indonesian technology & R&D company that designs, builds, and runs its own products — IoT devices, apps, websites, and systems. Open to development partnerships.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const isEn = locale === "en";
   const description = isEn ? DESC_EN : DESC_ID;
   const title = isEn
-    ? "NUII — Technology & R&D That Builds Its Own Products"
-    : "NUII — Teknologi & R&D yang Membangun Produknya Sendiri";
+    ? "NUII — Technology & R&D Indonesia | Builder of IoT, Apps & Systems"
+    : "NUII — Teknologi & R&D Indonesia | Pembuat Produk IoT, Aplikasi & Sistem";
 
   return {
     metadataBase: new URL(SITE_URL),

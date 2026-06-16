@@ -33,6 +33,14 @@ export default function NewArticlePage() {
     const [metaTitle, setMetaTitle] = useState("")
     const [metaDescription, setMetaDescription] = useState("")
 
+    // English (optional)
+    const [titleEn, setTitleEn] = useState("")
+    const [excerptEn, setExcerptEn] = useState("")
+    const [contentEn, setContentEn] = useState("")
+    const [metaTitleEn, setMetaTitleEn] = useState("")
+    const [metaDescriptionEn, setMetaDescriptionEn] = useState("")
+    const [lang, setLang] = useState<"id" | "en">("id")
+
     const [categories, setCategories] = useState<Category[]>([])
     const [tags, setTags] = useState<Tag[]>([])
     const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
@@ -95,7 +103,12 @@ export default function NewArticlePage() {
                 tags: selectedTags,
                 featuredImageId,
                 metaTitle,
-                metaDescription
+                metaDescription,
+                titleEn,
+                excerptEn,
+                contentEn,
+                metaTitleEn,
+                metaDescriptionEn
             })
         })
 
@@ -171,6 +184,21 @@ export default function NewArticlePage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             {/* Left Column: Content */}
                             <div className="lg:col-span-2 space-y-6">
+                                {/* Language tabs */}
+                                <div className="bg-white rounded-2xl shadow-lg p-2 border border-gray-100 flex gap-2">
+                                    <button type="button" onClick={() => setLang("id")} className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${lang === "id" ? "bg-blue-600 text-white shadow" : "text-gray-600 hover:bg-gray-100"}`}>
+                                        🇮🇩 Bahasa Indonesia
+                                    </button>
+                                    <button type="button" onClick={() => setLang("en")} className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${lang === "en" ? "bg-blue-600 text-white shadow" : "text-gray-600 hover:bg-gray-100"}`}>
+                                        🇬🇧 English (opsional)
+                                    </button>
+                                </div>
+                                {lang === "en" && (
+                                    <p className="text-xs text-gray-500 -mt-2 px-1">Jika kolom English dikosongkan, tampilan berbahasa Inggris akan otomatis memakai teks Indonesia.</p>
+                                )}
+
+                                {/* ===== Indonesian fields ===== */}
+                                <div className={lang === "id" ? "space-y-6" : "hidden"}>
                                 {/* Title Input */}
                                 <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                                     <label className="block mb-2">
@@ -249,6 +277,69 @@ export default function NewArticlePage() {
                                                 placeholder="Description for search results..."
                                                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 resize-none"
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
+                                {/* ===== English fields (optional) ===== */}
+                                <div className={lang === "en" ? "space-y-6" : "hidden"}>
+                                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                        <label className="block mb-2 text-gray-700 font-semibold">Title (English)</label>
+                                        <input
+                                            type="text"
+                                            value={titleEn}
+                                            onChange={(e) => setTitleEn(e.target.value)}
+                                            placeholder="Article title in English..."
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                                        />
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                        <label className="block mb-2 text-gray-700 font-semibold">Excerpt (English)</label>
+                                        <textarea
+                                            value={excerptEn}
+                                            onChange={(e) => setExcerptEn(e.target.value)}
+                                            rows={3}
+                                            placeholder="Short summary in English..."
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all resize-none"
+                                        />
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                        <label className="block mb-2 text-gray-700 font-semibold">Content (English)</label>
+                                        <textarea
+                                            value={contentEn}
+                                            onChange={(e) => setContentEn(e.target.value)}
+                                            rows={12}
+                                            placeholder="Full article content in English..."
+                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                                        />
+                                    </div>
+                                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                                        <h3 className="text-gray-700 font-bold text-lg mb-4 flex items-center">
+                                            <FaSearchPlus className="mr-2 text-blue-500" />
+                                            SEO Settings (English)
+                                        </h3>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block mb-1 text-sm font-medium text-gray-600">Meta Title (EN)</label>
+                                                <input
+                                                    type="text"
+                                                    value={metaTitleEn}
+                                                    onChange={(e) => setMetaTitleEn(e.target.value)}
+                                                    placeholder="Title for search engines..."
+                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block mb-1 text-sm font-medium text-gray-600">Meta Description (EN)</label>
+                                                <textarea
+                                                    value={metaDescriptionEn}
+                                                    onChange={(e) => setMetaDescriptionEn(e.target.value)}
+                                                    rows={2}
+                                                    placeholder="Description for search results..."
+                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 resize-none"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

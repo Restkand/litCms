@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { getI18n } from "@/lib/i18n"
+import { getI18n, getLocale } from "@/lib/i18n"
+import { pickArticle, hasEnglish } from "@/lib/articleLang"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nuiiapp.com"
 
@@ -10,14 +11,20 @@ export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
+  const locale = await getLocale()
   const article = await prisma.article.findUnique({
     where: { slug },
-    select: { title: true, excerpt: true, published: true, featuredImage: { select: { url: true, alt: true } } },
+    select: {
+      title: true, excerpt: true, published: true, metaTitle: true, metaDescription: true,
+      titleEn: true, excerptEn: true, metaTitleEn: true, metaDescriptionEn: true,
+      featuredImage: { select: { url: true, alt: true } },
+    },
   })
   if (!article || !article.published) return {}
 
-  const title = article.title
-  const description = article.excerpt ?? undefined
+  const picked = pickArticle(article, locale)
+  const title = picked.metaTitle || picked.title
+  const description = (picked.metaDescription || picked.excerpt) ?? undefined
   const imageUrl = article.featuredImage?.url
     ? article.featuredImage.url.startsWith("http")
       ? article.featuredImage.url
@@ -60,10 +67,12 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
   })
   if (!article || !article.published) notFound()
 
+  const c = pickArticle(article, locale)
+
   const date = new Intl.DateTimeFormat(locale === "en" ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" }).format(
     article.publishedAt ?? article.createdAt,
   )
-  const words = article.content.trim().split(/\s+/).length
+  const words = c.content.trim().split(/\s+/).length
   const readTime = Math.max(1, Math.round(words / 200))
 
   const related = await prisma.article.findMany({
@@ -89,8 +98,17 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           <span style={{ color: "#BFB7A4" }}> / </span>
           <Link href="/article" className="hover:!text-[#BF6440]" style={{ color: "#6C685D", textDecoration: "none" }}>{t.article}</Link>
           <span style={{ color: "#BFB7A4" }}> / </span>
-          <span style={{ color: "#BF6440" }}>{article.title}</span>
+          <span style={{ color: "#BF6440" }}>{c.title}</span>
         </div>
+
+        {locale === "en" && !hasEnglish(article) && (
+          <div
+            className="mb-6 flex items-center gap-2 font-mono"
+            style={{ fontSize: 12, letterSpacing: "0.04em", color: "#9A5A3C", background: "#F6E7DD", border: "1px solid #E4BCA9", borderRadius: 8, padding: "10px 14px" }}
+          >
+            <span aria-hidden>ⓘ</span> {t.enUnavailable}
+          </div>
+        )}
 
         <div className="mb-4 flex flex-wrap items-center gap-3">
           {article.category && (
@@ -104,12 +122,12 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
         </div>
 
         <h1 className="font-serif" style={{ fontWeight: 500, fontSize: "clamp(32px,5vw,48px)", lineHeight: 1.08, letterSpacing: "-0.02em", color: "#16302A" }}>
-          {article.title}
+          {c.title}
         </h1>
 
-        {article.excerpt && (
+        {c.excerpt && (
           <p className="font-serif" style={{ fontSize: 21, lineHeight: 1.5, color: "#3A382F", marginTop: 22, fontStyle: "italic" }}>
-            {article.excerpt}
+            {c.excerpt}
           </p>
         )}
 
@@ -128,14 +146,14 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
       {article.featuredImage?.url && (
         <div className="mx-auto max-w-[1000px] px-6 md:px-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={article.featuredImage.url} alt={article.featuredImage.alt || article.title} className="w-full rounded-[14px] object-cover" style={{ maxHeight: 520 }} />
+          <img src={article.featuredImage.url} alt={article.featuredImage.alt || c.title} className="w-full rounded-[14px] object-cover" style={{ maxHeight: 520 }} />
         </div>
       )}
 
       {/* body */}
       <article className="mx-auto max-w-[760px] px-6 pb-10 pt-10 md:px-10">
         <div>
-          {article.content.split("\n").map((para, idx) =>
+          {c.content.split("\n").map((para, idx) =>
             para.trim() ? (
               <p key={idx} style={{ marginBottom: 22, color: "#2C2A22", fontSize: 18, lineHeight: 1.85 }}>
                 {para}
@@ -177,7 +195,7 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
                   {a.category && <span className="font-mono" style={{ fontSize: 11, color: "#BF6440", textTransform: "uppercase", letterSpacing: "0.08em" }}>{a.category.name}</span>}
                   <span className="font-mono" style={{ fontSize: 11, color: "#9A9686" }}>{fmtShort(a.publishedAt ?? a.createdAt)}</span>
                 </div>
-                <h3 className="font-serif" style={{ fontSize: 20, lineHeight: 1.2, color: "#16302A" }}>{a.title}</h3>
+                <h3 className="font-serif" style={{ fontSize: 20, lineHeight: 1.2, color: "#16302A" }}>{pickArticle(a, locale).title}</h3>
               </Link>
             ))}
           </div>

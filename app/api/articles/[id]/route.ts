@@ -64,7 +64,12 @@ export async function PUT(
     featuredImageId,
     metaTitle,
     metaDescription,
-    publishedAt
+    publishedAt,
+    titleEn,
+    excerptEn,
+    contentEn,
+    metaTitleEn,
+    metaDescriptionEn
   } = body;
 
   const data: {
@@ -78,6 +83,11 @@ export async function PUT(
     metaTitle?: string;
     metaDescription?: string;
     publishedAt?: Date | null;
+    titleEn?: string | null;
+    excerptEn?: string | null;
+    contentEn?: string | null;
+    metaTitleEn?: string | null;
+    metaDescriptionEn?: string | null;
     tags?: {
       disconnect: { id: string }[];
       connect: { id: string }[];
@@ -91,6 +101,12 @@ export async function PUT(
     metaTitle,
     metaDescription,
   };
+
+  if (titleEn !== undefined) data.titleEn = titleEn || null;
+  if (excerptEn !== undefined) data.excerptEn = excerptEn || null;
+  if (contentEn !== undefined) data.contentEn = contentEn || null;
+  if (metaTitleEn !== undefined) data.metaTitleEn = metaTitleEn || null;
+  if (metaDescriptionEn !== undefined) data.metaDescriptionEn = metaDescriptionEn || null;
 
   if (title !== undefined && title !== existingArticle.title) {
     data.title = title;

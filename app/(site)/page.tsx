@@ -2,6 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { getI18n } from "@/lib/i18n"
 import { PRODUCTS } from "@/lib/products"
+import { pickArticle } from "@/lib/articleLang"
 import Reveal from "@/app/components/site/Reveal"
 import Contact from "@/app/components/site/home/Contact"
 
@@ -350,11 +351,13 @@ export default async function BerandaPage() {
             <p className="font-mono" style={{ fontSize: 13, color: "#6C685D" }}>{dict.homeArticles.empty}</p>
           ) : (
             <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {latest.map((a) => (
+              {latest.map((a) => {
+                const ac = pickArticle(a, locale)
+                return (
                 <Link key={a.id} href={`/article/${a.slug}`} style={{ textDecoration: "none", display: "block" }}>
                   {a.featuredImage?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={a.featuredImage.url} alt={a.featuredImage.alt || a.title} className="mb-4 h-[180px] w-full rounded-lg object-cover" />
+                    <img src={a.featuredImage.url} alt={a.featuredImage.alt || ac.title} className="mb-4 h-[180px] w-full rounded-lg object-cover" />
                   ) : (
                     <div className="mb-4 flex h-[180px] items-center justify-center rounded-lg" style={{ background: "repeating-linear-gradient(135deg,#E0D6C0,#E0D6C0 10px,#D8CDB4 10px,#D8CDB4 20px)" }}>
                       <span className="font-mono" style={{ fontSize: 11, color: "#9A9078" }}>[ thumbnail ]</span>
@@ -364,10 +367,11 @@ export default async function BerandaPage() {
                     {a.category && <span className="font-mono" style={{ fontSize: 11, color: "#BF6440", textTransform: "uppercase", letterSpacing: "0.08em" }}>{a.category.name}</span>}
                     <span className="font-mono" style={{ fontSize: 11, color: "#9A9686" }}>{fmtDate(a.publishedAt ?? a.createdAt)}</span>
                   </div>
-                  <h3 className="font-serif" style={{ fontSize: 22, lineHeight: 1.2, color: "#16302A", marginBottom: 8 }}>{a.title}</h3>
-                  {a.excerpt && <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A574C" }}>{a.excerpt}</p>}
+                  <h3 className="font-serif" style={{ fontSize: 22, lineHeight: 1.2, color: "#16302A", marginBottom: 8 }}>{ac.title}</h3>
+                  {ac.excerpt && <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A574C" }}>{ac.excerpt}</p>}
                 </Link>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
